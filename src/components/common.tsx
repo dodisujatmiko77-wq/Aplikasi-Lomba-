@@ -9,8 +9,11 @@ import { uploadImage } from '@/services/db'
 import { LABELS, initials } from '@/utils/format'
 import type { SessionStatus } from '@/types'
 
-export function Logo({ className, size = 36 }: { className?: string; size?: number }) {
-  return <img src="/logo.svg" alt="Lomba Rangking 1" width={size} height={size} className={cn('shrink-0 rounded-xl', className)} />
+/** variant "mark": ikon persegi (ukuran kecil); "full": logo lengkap, `size` = tinggi. */
+export function Logo({ className, size = 36, variant = 'mark' }: { className?: string; size?: number; variant?: 'mark' | 'full' }) {
+  return variant === 'full'
+    ? <img src="/logo.png" alt="Lomba Rangking 1" height={size} style={{ height: size, width: 'auto' }} className={cn('shrink-0 object-contain', className)} />
+    : <img src="/logo-mark.png" alt="Lomba Rangking 1" width={size} height={size} className={cn('shrink-0 object-contain', className)} />
 }
 
 export function PageHeader({ title, description, actions }: { title: string; description?: string; actions?: ReactNode }) {

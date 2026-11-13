@@ -73,7 +73,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col bg-navy-900 text-white">
       <div className="flex items-center gap-3 px-5 pb-4 pt-5">
-        <Logo size={40} />
+        <Logo size={48} />
         <div className="leading-tight">
           <p className="font-heading text-[15px] font-bold tracking-tight">Lomba Rangking 1</p>
           <p className="text-[11px] text-navy-300">UPT SMPN 1 Baradatu</p>

@@ -42,7 +42,7 @@ function Login({ onLogin }: { onLogin: (token: string) => void }) {
   return (
     <Shell dark>
       <div className="mx-auto flex min-h-[100dvh] max-w-sm flex-col justify-center px-6 py-10">
-        <div className="mb-8 flex items-center gap-3"><Logo size={44} /><div><p className="font-heading text-lg font-bold leading-tight">Lomba Rangking 1</p><p className="text-xs text-navy-200">Masuk peserta</p></div></div>
+        <div className="mb-6 flex flex-col items-center gap-1"><Logo variant="full" size={130} /><p className="text-sm font-semibold text-navy-200">Masuk peserta</p></div>
         <form onSubmit={submit} className="space-y-4 rounded-2xl bg-white p-5 text-foreground shadow-2xl">
           <label className="block space-y-1.5"><span className="text-sm font-medium">Kode peserta</span>
             <Input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} autoCapitalize="characters" autoComplete="username" autoCorrect="off" spellCheck={false} required className="h-14 text-center font-mono text-2xl font-bold tracking-[0.2em]" placeholder="R7K2MQ" /></label>

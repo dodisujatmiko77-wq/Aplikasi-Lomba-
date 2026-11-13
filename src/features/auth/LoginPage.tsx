@@ -42,8 +42,7 @@ export default function LoginPage() {
         <div className="grid-lines absolute inset-0" />
         <div className="relative flex h-full flex-col justify-between p-12">
           <div className="flex items-center gap-3">
-            <Logo size={44} />
-            <span className="font-heading text-lg font-bold">Lomba Rangking 1</span>
+            <Logo variant="full" size={150} />
           </div>
           <div>
             <p className="mb-4 inline-block rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-electric-400">Panel Operator</p>
@@ -57,7 +56,7 @@ export default function LoginPage() {
       <div className="flex items-center justify-center p-6">
         <div className="w-full max-w-sm">
           <Link to="/" className="mb-8 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" /> Beranda</Link>
-          <div className="mb-6 flex items-center gap-3 lg:hidden"><Logo /><span className="font-heading font-bold">Lomba Rangking 1</span></div>
+          <div className="mb-6 flex items-center gap-3 lg:hidden"><Logo variant="full" size={72} /></div>
           <h2 className="text-2xl font-bold text-navy-900">Masuk Admin</h2>
           <p className="mt-1 text-sm text-muted-foreground">Khusus Superadmin dan Admin. Peserta masuk lewat <Link className="font-semibold text-electric-600 hover:underline" to="/peserta">halaman peserta</Link>.</p>
 

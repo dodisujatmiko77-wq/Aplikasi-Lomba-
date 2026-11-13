@@ -44,7 +44,7 @@ export default function LandingPage() {
         <div className="relative mx-auto max-w-6xl px-5">
           <nav className="flex items-center justify-between py-5">
             <div className="flex items-center gap-3">
-              {b.logo_url ? <img src={b.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover" /> : <Logo size={40} />}
+              {b.logo_url ? <img src={b.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover" /> : <Logo size={44} />}
               <div className="leading-tight">
                 <p className="font-heading font-bold">{b.app_name}</p>
                 <p className="text-[11px] text-navy-200">{b.organizer}</p>
@@ -59,6 +59,7 @@ export default function LandingPage() {
 
           <div className="grid items-center gap-10 pb-20 pt-10 lg:grid-cols-[1.15fr_1fr] lg:pb-28 lg:pt-16">
             <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <Logo variant="full" size={170} className="mb-3" />
               <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-electric-400">
                 <Radio className="h-3.5 w-3.5" /> Competition Management & Real-Time Scoring
               </p>

@@ -264,7 +264,7 @@ function ResultScreen({ s }: { s: LiveState }) {
 function WaitingScreen({ s, paused }: { s: LiveState; paused: boolean }) {
   return (
     <div className="flex h-full flex-col items-center justify-center text-center">
-      <img src={s.session.logo_url || '/logo.svg'} alt="" className="rounded-3xl object-cover" style={{ width: u(11), height: u(11) }} />
+      <img src={s.session.logo_url || '/logo.png'} alt="" className="object-contain" style={{ height: u(s.session.logo_url ? 11 : 17), maxWidth: u(26) }} />
       <p className="font-heading font-extrabold leading-tight text-balance" style={{ fontSize: u(5), marginTop: u(2.4) }}>{s.session.event_name}</p>
       <p className="font-heading font-bold text-electric-400" style={{ fontSize: u(3), marginTop: u(0.8) }}>{s.session.name} · {s.session.level}</p>
       <div className="inline-flex items-center rounded-full bg-white/10" style={{ gap: u(1.2), padding: `${u(0.8)} ${u(2.4)}`, marginTop: u(3), fontSize: u(2.4) }}>
@@ -341,7 +341,7 @@ export default function LiveScoreboardPage() {
     <Frame>
       <div className="absolute inset-0 flex flex-col" style={{ padding: `${u(1.6)} ${u(2.6)} ${u(2)}` }}>
         <header className="flex shrink-0 items-center" style={{ gap: u(1.4), marginBottom: u(1.2) }}>
-          {s.session.logo_url ? <img src={s.session.logo_url} alt="" className="rounded-xl object-cover" style={{ width: u(3.6), height: u(3.6) }} /> : <img src="/logo.svg" alt="" className="rounded-xl" style={{ width: u(3.6), height: u(3.6) }} />}
+          {s.session.logo_url ? <img src={s.session.logo_url} alt="" className="rounded-xl object-cover" style={{ width: u(3.6), height: u(3.6) }} /> : <img src="/logo-mark.png" alt="" className="object-contain" style={{ width: u(4.4), height: u(4.4) }} />}
           <div className="min-w-0 leading-tight">
             <p className="truncate font-heading font-bold" style={{ fontSize: u(1.9) }}>{s.session.event_name}</p>
             <p className="truncate text-navy-200" style={{ fontSize: u(1.3) }}>{s.session.level} · {s.session.name}{s.round ? ` · ${s.round.name} (${LABELS.roundMode[s.round.mode]})` : ''}</p>

@@ -37,11 +37,13 @@ Buka **SQL Editor** dan jalankan **berurutan**, satu berkas per eksekusi:
 ## 4. Edge Function `admin-users` (pembuatan akun Admin)
 Satu-satunya tempat `service_role` dipakai (otomatis tersedia di runtime Edge Function, tidak perlu disalin ke mana pun).
 ```bash
-npm i -g supabase
-supabase login
-supabase link --project-ref <ref-proyek>
-supabase functions deploy admin-users
+npx supabase login
+npx supabase functions deploy admin-users --project-ref <ref-proyek> --use-api
 ```
+`<ref-proyek>` = potongan acak pada `https://<ref-proyek>.supabase.co`. Tidak perlu `supabase link` maupun Docker.
+Alternatif tanpa terminal: Dashboard → **Edge Functions → Deploy a new function → Via Editor**, nama `admin-users`, tempel isi `supabase/functions/admin-users/index.ts`, biarkan *Verify JWT* aktif.
+Uji: masuk sebagai Superadmin → **Manajemen Admin → Admin baru**.
+
 Tanpa fungsi ini aplikasi memakai jalur cadangan (pendaftaran biasa lalu diaktifkan Superadmin), tetapi reset kata sandi/hapus akun harus lewat dashboard Supabase.
 
 ## 5. Verifikasi keamanan

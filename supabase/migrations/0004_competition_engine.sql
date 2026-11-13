@@ -534,6 +534,7 @@ declare
   sc scores; pa participant_answers;
   v_correct boolean; v_ms integer; v_points numeric; v_text text := nullif(trim(coalesce(p_answer_text, '')), '');
   v_key text := coalesce(nullif(p_idempotency_key, ''), '');
+  v_answered bigint;
 begin
   -- (1) identitas peserta
   v_pid := public._participant_from_token(p_token);
@@ -543,7 +544,7 @@ begin
   if length(v_key) < 8 or length(v_key) > 80 then
     return jsonb_build_object('ok', false, 'code', 'INVALID_REQUEST', 'message', 'Permintaan tidak valid');
   end if;
-  if not public._rate_limit('submit:' || v_pid::text, 12, 10) then
+  if not public._rate_limit('submit:' || v_pid::text, 30, 10) then
     return jsonb_build_object('ok', false, 'code', 'RATE_LIMITED', 'message', 'Terlalu banyak permintaan');
   end if;
 
@@ -645,9 +646,13 @@ begin
     where session_id = s.id and participant_id = v_pid;
   end if;
 
-  perform public._notify(s.id, 'progress', jsonb_build_object(
-    'cq', cq.id,
-    'answered', (select count(*) from participant_answers x where x.competition_question_id = cq.id)));
+  -- Sinyal progres dijarangkan (10 pertama, lalu tiap kelipatan 5, dan jawaban terakhir) agar
+  -- 135 submit tidak menjadi 135 broadcast. Klien tetap mengambil snapshot resmi lewat polling.
+  select count(*) into v_answered from participant_answers x where x.competition_question_id = cq.id;
+  if v_answered <= 10 or v_answered % 5 = 0
+     or v_answered = (select count(*) from scores x where x.round_id = r.id and not x.is_eliminated) then
+    perform public._notify(s.id, 'progress', jsonb_build_object('cq', cq.id, 'answered', v_answered));
+  end if;
 
   -- Benar/salah TIDAK dikembalikan: hasil baru terlihat setelah operator membuka jawaban.
   return jsonb_build_object('ok', true, 'replay', false, 'answered_at', v_now, 'response_time_ms', v_ms);

@@ -27,6 +27,8 @@ const ParticipantPage = lazy(() => import('@/features/competition/ParticipantPag
 const LiveScoreboardPage = lazy(() => import('@/features/scoreboard/LiveScoreboardPage'))
 const PublicResultsPage = lazy(() => import('@/features/scoreboard/PublicResultsPage'))
 const ScoreboardAdminPage = lazy(() => import('@/features/scoreboard/ScoreboardAdminPage'))
+const ResultsPage = lazy(() => import('@/features/reports/ResultsPage'))
+const ReportsPage = lazy(() => import('@/features/reports/ReportsPage'))
 /* ROUTE-IMPORTS */
 
 function NotFound() {
@@ -61,6 +63,8 @@ export default function App() {
           <Route path="sessions/:id" element={<SessionSetupPage />} />
           <Route path="control/:id" element={<ControlPanelPage />} />
           <Route path="scoreboard" element={<ScoreboardAdminPage />} />
+          <Route path="results" element={<ResultsPage />} />
+          <Route path="reports" element={<ReportsPage />} />
           {/* ADMIN-ROUTES */}
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admins" element={<RequireSuperadmin><AdminsPage /></RequireSuperadmin>} />

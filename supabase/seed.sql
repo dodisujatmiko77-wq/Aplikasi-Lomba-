@@ -27,7 +27,8 @@ insert into public.app_settings (key, value, is_public) values
   ('branding', jsonb_build_object(
      'app_name', 'Lomba Rangking 1',
      'tagline', 'Siapa Cepat, Siapa Tepat, Dialah Juara!',
-     'organizer', 'UPT SMPN 1 Baradatu',
+     'organizer', 'PGRI Kabupaten Way Kanan',
+     'product_owner', 'UPT SMPN 1 Baradatu',
      'developer', 'Dodi Sujatmiko',
      'logo_url', null,
      'description', 'Platform kompetisi Rangking 1 yang menentukan juara dari kombinasi kecepatan dan ketepatan menjawab. Peserta menjawab lewat HP masing-masing, skor dihitung server, dan klasemen tampil langsung di layar utama.'), true),
@@ -65,7 +66,7 @@ begin
   insert into public.events (name, description, location, organizer, start_date, status, is_public)
   values ('Lomba Rangking 1 Tingkat Kabupaten',
           'Lomba cerdas cermat format Rangking 1 untuk jenjang SD, SMP, dan SMA/SMK. Setiap kecamatan mengirim 3 peserta per jenjang.',
-          'Aula UPT SMPN 1 Baradatu', 'UPT SMPN 1 Baradatu', current_date + 14, 'published', true)
+          'Aula UPT SMPN 1 Baradatu', 'PGRI Kabupaten Way Kanan', current_date + 14, 'published', true)
   returning id into v_event;
 
   insert into public.question_packages (event_id, education_level_id, name, description)

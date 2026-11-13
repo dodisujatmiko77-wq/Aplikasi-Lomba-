@@ -19,7 +19,7 @@ import { fmtDate, LABELS } from '@/utils/format'
 import type { EventRow } from '@/types'
 
 type Draft = Partial<EventRow>
-const EMPTY: Draft = { name: '', description: '', location: '', organizer: 'UPT SMPN 1 Baradatu', status: 'draft', is_public: true, participants_per_district: 3, logo_url: null, start_date: null, end_date: null }
+const EMPTY: Draft = { name: '', description: '', location: '', organizer: 'PGRI Kabupaten Way Kanan', status: 'draft', is_public: true, participants_per_district: 3, logo_url: null, start_date: null, end_date: null }
 
 export default function EventsPage() {
   const { isSuperadmin } = useAuth()

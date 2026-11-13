@@ -1,6 +1,7 @@
 # Lomba Rangking 1
 
 **Competition Management & Real-Time Scoring System** — Produk UPT SMPN 1 Baradatu · Dikembangkan oleh Dodi Sujatmiko
+Dikembangkan untuk mendukung lomba yang diselenggarakan oleh PGRI Kabupaten Way Kanan
 *"Siapa Cepat, Siapa Tepat, Dialah Juara!"*
 
 Platform lomba cerdas cermat format Rangking 1: peserta menjawab lewat HP, skor dihitung server dari **kecepatan + ketepatan**, klasemen tampil real-time di layar utama.

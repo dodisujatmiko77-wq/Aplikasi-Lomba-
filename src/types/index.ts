@@ -124,4 +124,4 @@ export interface AnswerHistoryRow {
   participant_id: string; number: string; name: string; school: string; district: string
   answer: string | null; is_correct: boolean; response_time_ms: number; points: number; answered_at: string
 }
-export interface Branding { app_name: string; tagline: string; organizer: string; developer: string; logo_url: string | null; description: string }
+export interface Branding { app_name: string; tagline: string; organizer: string; product_owner: string; developer: string; logo_url: string | null; description: string }

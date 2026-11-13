@@ -47,7 +47,7 @@ export default function LandingPage() {
               {b.logo_url ? <img src={b.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover" /> : <Logo size={44} />}
               <div className="leading-tight">
                 <p className="font-heading font-bold">{b.app_name}</p>
-                <p className="text-[11px] text-navy-200">{b.organizer}</p>
+                <p className="text-[11px] text-navy-200">Produk {b.product_owner}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -218,11 +218,16 @@ export default function LandingPage() {
             </li>
           ))}
         </ol>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-2xl bg-navy-900 p-6 text-white">
-            <p className="text-xs font-semibold uppercase tracking-widest text-electric-400">Penyelenggara</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-electric-400">Penyelenggara lomba</p>
             <p className="mt-2 font-heading text-2xl font-bold">{b.organizer}</p>
-            <p className="mt-2 text-sm text-navy-200">Penyelenggara dan pemilik produk {b.app_name}.</p>
+            <p className="mt-2 text-sm text-navy-200">Pelaksana perlombaan yang menggunakan aplikasi {b.app_name}.</p>
+          </div>
+          <div className="rounded-2xl border p-6">
+            <p className="text-xs font-semibold uppercase tracking-widest text-electric-600">Produk</p>
+            <p className="mt-2 font-heading text-2xl font-bold text-navy-900">{b.product_owner}</p>
+            <p className="mt-2 text-sm text-muted-foreground">Pemilik aplikasi, dikembangkan untuk mendukung penyelenggaraan lomba.</p>
           </div>
           <div className="rounded-2xl border p-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-flame-600">Pengembang</p>
@@ -234,8 +239,9 @@ export default function LandingPage() {
 
       <footer className="bg-navy-950 py-10 text-center text-navy-200">
         <p className="font-heading text-lg font-bold tracking-wide text-white">LOMBA RANGKING 1</p>
-        <p className="mt-1 text-sm">Produk {b.organizer}</p>
+        <p className="mt-1 text-sm">Produk {b.product_owner}</p>
         <p className="text-sm">Dikembangkan oleh {b.developer}.</p>
+        <p className="mt-3 text-xs text-navy-300">Lomba diselenggarakan oleh {b.organizer}</p>
       </footer>
     </div>
   )

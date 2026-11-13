@@ -368,7 +368,7 @@ export default function LiveScoreboardPage() {
           </AnimatePresence>
         </main>
         <footer className="flex shrink-0 justify-between text-navy-300" style={{ fontSize: u(1.1), marginTop: u(0.8) }}>
-          <span>LOMBA RANGKING 1 · Produk UPT SMPN 1 Baradatu</span><span>Dikembangkan oleh Dodi Sujatmiko</span>
+          <span>LOMBA RANGKING 1 · Produk UPT SMPN 1 Baradatu</span>{s.session.organizer && <span>Penyelenggara: {s.session.organizer}</span>}<span>Dikembangkan oleh Dodi Sujatmiko</span>
         </footer>
       </div>
       <button onClick={toggle} aria-label={isFullscreen ? 'Keluar layar penuh' : 'Layar penuh'}

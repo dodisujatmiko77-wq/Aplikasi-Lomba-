@@ -18,7 +18,10 @@ Buka **SQL Editor** dan jalankan **berurutan**, satu berkas per eksekusi:
 | 2 | `supabase/migrations/0002_security.sql` | fungsi otorisasi, trigger, RLS, bucket Storage |
 | 3 | `supabase/migrations/0003_admin_functions.sql` | RPC admin: peserta, PIN, bank soal |
 | 4 | `supabase/migrations/0004_competition_engine.sql` | mesin lomba: skor, submit atomik, kontrol operator |
-| 5 | `supabase/seed.sql` | 3 jenjang, 15 kecamatan, role, contoh event & 12 soal |
+| 5 | `supabase/migrations/0005_fix_new_user_trigger.sql` | perbaikan pembuatan user (aman diulang) |
+| 6 | `supabase/seed.sql` | 3 jenjang, 15 kecamatan, role, contoh event & 12 soal |
+
+> **Jika membuat user Supabase gagal** ("Database error creating new user"): jalankan `0005_fix_new_user_trigger.sql`, lalu buat user lagi.
 
 > Berkas 0001–0004 **tidak idempoten**: jalankan sekali pada proyek kosong. Untuk mengulang dari nol, buat proyek baru atau reset database.
 

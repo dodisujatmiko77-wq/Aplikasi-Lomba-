@@ -159,10 +159,16 @@ end $$;
 create or replace function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.profiles (id, role_id, full_name, email, is_active)
-  values (new.id, (select id from public.roles where key = 'admin'),
-          coalesce(new.raw_user_meta_data ->> 'full_name', ''), new.email, false)
-  on conflict (id) do nothing;
+  begin
+    insert into public.roles (key, name) values ('admin', 'Admin') on conflict (key) do nothing;
+    insert into public.profiles (id, role_id, full_name, email, is_active)
+    values (new.id, (select id from public.roles where key = 'admin'),
+            coalesce(new.raw_user_meta_data ->> 'full_name', ''), new.email, false)
+    on conflict (id) do nothing;
+  exception when others then
+    -- Pembuatan akun Auth tidak boleh diblokir oleh profil; bootstrap_superadmin akan membuat profil bila belum ada.
+    raise warning 'handle_new_user gagal untuk %: %', new.id, sqlerrm;
+  end;
   return new;
 end $$;
 
@@ -182,6 +188,7 @@ begin
   if exists (select 1 from profiles p join roles r on r.id = p.role_id where r.key = 'superadmin' and p.is_active) then
     raise exception 'Superadmin sudah ada. Gunakan menu Manajemen Admin untuk menambah superadmin lain.';
   end if;
+  insert into roles (key, name) values ('superadmin', 'Superadmin'), ('admin', 'Admin') on conflict (key) do nothing;
   select id into v_user from auth.users where lower(email) = lower(trim(p_email));
   if v_user is null then
     raise exception 'Akun % belum ada. Buat dulu di Supabase Dashboard > Authentication > Users.', p_email;

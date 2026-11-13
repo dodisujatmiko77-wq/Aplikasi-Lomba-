@@ -38,6 +38,11 @@
   .toc > ol > li { font-weight:700; margin-top: 4mm; color: var(--navy); }
   .toc ol ol { padding-left: 6mm; margin-top: 1.5mm; }
   .toc ol ol li { font-weight: 400; color: #1a2238; margin: 0; padding: 0.4mm 0; border-bottom: 1px dotted var(--line); font-size: 9.5pt; }
+  .toc li { display: flex; justify-content: space-between; gap: 3mm; }
+  .toc li > ol { flex: 0 0 100%; }
+  .toc li { flex-wrap: wrap; }
+  .toc li > span:first-child { flex: 1 1 0; min-width: 0; }
+  .toc .pg { flex: 0 0 auto; font-variant-numeric: tabular-nums; color: var(--navy); font-weight: 700; }
   .toc a { color: inherit; text-decoration: none; }
   figure { margin: 3mm 0 5mm; break-inside: avoid; text-align:center; }
   figure img { max-width: 84%; border: 1px solid var(--line); border-radius: 2mm; box-shadow: 0 1px 4px rgba(11,27,63,.12); }
@@ -123,14 +128,14 @@
     <tr><td><b>Peserta</b></td><td>Masuk dengan kode + PIN, menjawab soal pada sesi yang diikutinya, melihat hasil setelah dibuka.</td><td>Melihat kunci jawaban, soal berikutnya, mengubah jawaban, melihat data peserta lain.</td></tr>
   </table>
   <h2>Alamat penting</h2>
-  <p>Ganti <code>situs-anda</code> dengan alamat situs yang dipakai (contoh: <code>lomba-rangking1.vercel.app</code>).</p>
+  <p>Alamat situs aplikasi: <b>https://lomba-rangking1.vercel.app</b></p>
   <table>
     <tr><th style="width:36%">Alamat</th><th>Untuk apa</th></tr>
-    <tr><td><code>situs-anda/</code></td><td>Beranda publik: jadwal, hasil, panduan.</td></tr>
-    <tr><td><code>situs-anda/login</code></td><td>Masuk Superadmin dan Admin.</td></tr>
-    <tr><td><code>situs-anda/peserta</code></td><td>Masuk peserta (dibuka dari HP).</td></tr>
-    <tr><td><code>situs-anda/live/KODE</code></td><td>Monitor satu sesi. <code>KODE</code> terdiri dari 6 karakter dan tertera di halaman sesi.</td></tr>
-    <tr><td><code>situs-anda/hasil/KODE</code></td><td>Hasil resmi satu sesi (tampil setelah hasil dipublikasikan).</td></tr>
+    <tr><td><code>lomba-rangking1.vercel.app/</code></td><td>Beranda publik: jadwal, hasil, panduan.</td></tr>
+    <tr><td><code>lomba-rangking1.vercel.app/login</code></td><td>Masuk Superadmin dan Admin.</td></tr>
+    <tr><td><code>lomba-rangking1.vercel.app/peserta</code></td><td>Masuk peserta (dibuka dari HP).</td></tr>
+    <tr><td><code>lomba-rangking1.vercel.app/live/KODE</code></td><td>Monitor satu sesi. <code>KODE</code> terdiri dari 6 karakter dan tertera di halaman sesi.</td></tr>
+    <tr><td><code>lomba-rangking1.vercel.app/hasil/KODE</code></td><td>Hasil resmi satu sesi (tampil setelah hasil dipublikasikan).</td></tr>
   </table>
   <h2>Cara skor dihitung</h2>
   <div class="box"><b class="t">Rumus</b>Jawaban <b>benar</b>: <code>skor = 100 + 50 × (sisa waktu ÷ total waktu)</code><br>Jawaban <b>salah</b> atau <b>tidak menjawab</b>: <code>0 poin</code></div>
@@ -157,7 +162,7 @@
   <h2>A1. Masuk dan mengenal tampilan</h2>
   <p>Superadmin pertama dibuat sekali oleh pemasang aplikasi (panduan pemasangan ada di berkas <code>docs/DEPLOYMENT.md</code>). Setelah itu semua pengelolaan dilakukan dari dalam aplikasi.</p>
   <ol class="steps">
-    <li>Buka <code>situs-anda/login</code>.</li>
+    <li>Buka <code>lomba-rangking1.vercel.app/login</code>.</li>
     <li>Isi <b>Email</b> dan <b>Kata sandi</b>, klik <b>Masuk</b>.</li>
     <li>Anda tiba di <b>Dashboard</b>.</li>
   </ol>
@@ -301,7 +306,7 @@
 <section>
   <h2>B1. Masuk dan memilih event</h2>
   <ol class="steps">
-    <li>Buka <code>situs-anda/login</code> dan masuk dengan email dan kata sandi dari Superadmin.</li>
+    <li>Buka <code>lomba-rangking1.vercel.app/login</code> dan masuk dengan email dan kata sandi dari Superadmin.</li>
     <li>Di bagian atas, pilih <b>Event</b> yang akan dikelola. Daftar hanya berisi event yang ditugaskan kepada Anda.</li>
     <li>Menu yang bisa dipakai bergantung pada izin Anda (Peserta, Soal, Kontrol, Laporan). Bila tombol tidak muncul atau muncul pesan “tidak memiliki izin”, minta Superadmin menambah izin.</li>
   </ol>
@@ -453,7 +458,7 @@
   <figure><img src="img/ad-18-hasil.jpg" alt=""><figcaption>Hasil Perlombaan.</figcaption></figure>
   <ul>
     <li><b>Excel</b>, <b>PDF</b>, dan <b>Cetak</b> memakai penyaring yang sedang aktif.</li>
-    <li><b>Publikasikan hasil</b> membuat hasil dapat dilihat publik di <code>situs-anda/hasil/KODE</code>. Tombol yang sama menyembunyikannya kembali. (Mengumumkan pemenang otomatis mempublikasikan.)</li>
+    <li><b>Publikasikan hasil</b> membuat hasil dapat dilihat publik di <code>lomba-rangking1.vercel.app/hasil/KODE</code>. Tombol yang sama menyembunyikannya kembali. (Mengumumkan pemenang otomatis mempublikasikan.)</li>
   </ul>
   <h3>Laporan dan sertifikat</h3>
   <figure><img src="img/ad-19-laporan.jpg" alt=""><figcaption>Menu Laporan.</figcaption></figure>
@@ -517,7 +522,7 @@
 
   <h2>C2. Masuk ke ruang lomba</h2>
   <ol class="steps">
-    <li>Pindai <b>QR</b> yang ditampilkan panitia, atau buka <code>situs-anda/peserta</code>.</li>
+    <li>Pindai <b>QR</b> yang ditampilkan panitia, atau buka <code>lomba-rangking1.vercel.app/peserta</code>.</li>
     <li>Ketik <b>Kode peserta</b> (huruf besar otomatis) dan <b>PIN</b>.</li>
     <li>Tekan <b>Masuk</b>.</li>
     <li>Jika muncul <b>“Anda sudah masuk”</b>, berarti berhasil. Tunggu panitia memulai. <u>Jangan menutup halaman ini.</u></li>

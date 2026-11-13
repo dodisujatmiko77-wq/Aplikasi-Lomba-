@@ -326,8 +326,10 @@ await test('benar pada detik ke-10 → ≈125; detik ke-18 → ≈105; salah →
   near(await pts(1), 125, 0.5); near(await pts(2), 105, 0.5); eq(await pts(3), 0)
 })
 await test('8 request bersamaan dari satu peserta → tepat satu jawaban sah', async () => {
-  const good = await correctOpt(Q[0].id), bad = await wrongOpt(Q[0].id)
-  const res = await Promise.all(Array.from({ length: 8 }, (_, k) => submit(4, cq1, { option: k % 2 ? good : bad })))
+  // 8 pilihan berbeda-beda (semuanya salah) dikirim bersamaan: pemenang balapan acak, tetapi hasilnya selalu "salah"
+  // sehingga tes berikutnya deterministik. Yang diuji: tepat satu jawaban sah.
+  const wrongs = (await su.query(`select id from question_options where question_id = $1 and not is_correct order by sort_order`, [Q[0].id])).rows.map((r) => r.id)
+  const res = await Promise.all(Array.from({ length: 8 }, (_, k) => submit(4, cq1, { option: wrongs[k % wrongs.length] })))
   eq(res.filter((r) => r.ok).length, 1, 'jumlah diterima')
   eq(res.filter((r) => r.code === 'ALREADY_ANSWERED').length, 7)
   eq(await val(`select count(*)::int from participant_answers where competition_question_id = $1 and participant_id = $2`, [cq1, P[4].id]), 1)

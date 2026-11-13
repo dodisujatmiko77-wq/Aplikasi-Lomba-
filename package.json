@@ -13,7 +13,9 @@
     "test": "vitest run src",
     "test:db": "node scripts/db-test.mjs",
     "test:load": "node scripts/simulate-135.mjs",
-    "test:all": "npm run test && npm run test:db && npm run test:load"
+    "test:all": "npm run test && npm run test:db && npm run test:load",
+    "test:ui": "node scripts/ui-smoke.mjs && node scripts/ui-reconnect.mjs && node scripts/ui-export.mjs",
+    "dev:api": "node scripts/dev-api.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",

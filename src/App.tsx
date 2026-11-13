@@ -20,6 +20,10 @@ const AdminsPage = lazy(() => import('@/features/settings/AdminsPage'))
 const AccessPage = lazy(() => import('@/features/settings/AccessPage'))
 const AuditLogPage = lazy(() => import('@/features/settings/AuditLogPage'))
 const GlobalSettingsPage = lazy(() => import('@/features/settings/GlobalSettingsPage'))
+const SessionsPage = lazy(() => import('@/features/competition/SessionsPage'))
+const SessionSetupPage = lazy(() => import('@/features/competition/SessionSetupPage'))
+const ControlPanelPage = lazy(() => import('@/features/competition/ControlPanelPage'))
+const ParticipantPage = lazy(() => import('@/features/competition/ParticipantPage'))
 /* ROUTE-IMPORTS */
 
 function NotFound() {
@@ -38,6 +42,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/peserta" element={<ParticipantPage />} />
         {/* PUBLIC-ROUTES */}
         <Route path="/admin" element={<RequireAdmin><EventProvider><AdminLayout /></EventProvider></RequireAdmin>}>
           <Route index element={<DashboardPage />} />
@@ -47,6 +52,9 @@ export default function App() {
           <Route path="participants" element={<ParticipantsPage />} />
           <Route path="questions" element={<QuestionsPage />} />
           <Route path="packages" element={<PackagesPage />} />
+          <Route path="sessions" element={<SessionsPage />} />
+          <Route path="sessions/:id" element={<SessionSetupPage />} />
+          <Route path="control/:id" element={<ControlPanelPage />} />
           {/* ADMIN-ROUTES */}
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admins" element={<RequireSuperadmin><AdminsPage /></RequireSuperadmin>} />

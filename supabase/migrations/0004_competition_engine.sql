@@ -1027,6 +1027,7 @@ begin
   end if;
   return public._session_snapshot(s.id, true, 1000)
     || jsonb_build_object(
+      'event_id', s.event_id,
       'can_control', public.has_event_permission(s.event_id, 'control'),
       'current', v_cur,
       'rounds', coalesce((

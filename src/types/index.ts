@@ -109,6 +109,7 @@ export interface ParticipantState extends Omit<LiveState, 'session'> {
 export interface ControlRoundQuestion { id: string; question_id: string; sequence: number; status: CqStatus; duration_seconds: number; text: string; type: QuestionType; answered: number; correct: number }
 export interface ControlState extends LiveState {
   can_control: boolean
+  event_id: string
   current: LiveQuestion | null
   rounds: (CompetitionRound & { roster: number; questions: ControlRoundQuestion[] })[]
   leaderboard: LeaderboardRow[]

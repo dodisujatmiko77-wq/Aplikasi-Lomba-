@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { BadgeCheck, Download, FileDown, KeyRound, Pencil, Plus, Printer, Trash2, Upload } from 'lucide-react'
-import { toast } from 'sonner'
+import { BadgeCheck, Download, FileDown, IdCard, KeyRound, Pencil, Plus, Trash2, Upload } from 'lucide-react'
 import { list, listByIds, rpc, update } from '@/services/db'
 import { useAuth } from '@/contexts/AuthContext'
 import { useDistricts, useEvent, useLevels } from '@/contexts/EventContext'
@@ -19,6 +18,8 @@ import { SimpleSelect } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/switch'
 import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/table'
 import { exportExcel, readExcel } from '@/utils/excel'
+import { exportParticipantCards, type CardData } from '@/utils/cards'
+import CardsDialog, { useCardEvent, useCardMaker } from './CardsDialog'
 import { LABELS } from '@/utils/format'
 import type { EventParticipant, Participant } from '@/types'
 
@@ -32,28 +33,6 @@ interface ImportResult { row: number; ok: boolean; error?: string; code?: string
 
 const REG_VARIANT = { pending: 'orange', verified: 'green', rejected: 'red' } as const
 const PART_VARIANT = { registered: 'gray', active: 'blue', withdrawn: 'orange', disqualified: 'red' } as const
-
-function printCards(creds: Credential[], eventName: string) {
-  const w = window.open('', '_blank', 'width=900,height=700')
-  if (!w) return toast.error('Izinkan pop-up untuk mencetak kartu')
-  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!)
-  w.document.write(`<!doctype html><html><head><title>Kartu Peserta</title><style>
-    body{font-family:Inter,Arial,sans-serif;margin:16px;color:#0b1b3f}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .card{border:1.5px solid #0b1b3f;border-radius:10px;padding:12px;break-inside:avoid}
-    .ev{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#56627a}
-    .nm{font-weight:700;font-size:14px;margin:4px 0 8px}
-    .kv{display:flex;justify-content:space-between;font-size:12px;border-top:1px dashed #b3c6ea;padding-top:6px;margin-top:6px}
-    .mono{font-family:ui-monospace,Menlo,monospace;font-size:18px;font-weight:700;letter-spacing:.12em}
-    @media print{body{margin:8mm}}
-  </style></head><body><div class="grid">${creds.map((c) => `
-    <div class="card"><div class="ev">${esc(eventName)} · No. ${esc(c.participant_number ?? '')}</div>
-    <div class="nm">${esc(c.full_name ?? '')}</div>
-    <div class="kv"><span>Kode peserta</span><span class="mono">${esc(c.code)}</span></div>
-    <div class="kv"><span>PIN</span><span class="mono">${esc(c.pin ?? '—')}</span></div></div>`).join('')}
-  </div><script>window.onload=()=>window.print()</` + `script></body></html>`)
-  w.document.close()
-}
 
 function Inner({ eventId }: { eventId: string }) {
   const { can } = useAuth()
@@ -73,6 +52,9 @@ function Inner({ eventId }: { eventId: string }) {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [draft, setDraft] = useState<Draft | null>(null)
   const [creds, setCreds] = useState<Credential[] | null>(null)
+  const [cardsOpen, setCardsOpen] = useState(false)
+  const makeCard = useCardMaker()
+  const cardEvent = useCardEvent(event?.name ?? '', event?.organizer)
   const [importResult, setImportResult] = useState<ImportResult[] | null>(null)
 
   const { data: rows = [], isLoading } = useQuery({
@@ -184,6 +166,14 @@ function Inner({ eventId }: { eventId: string }) {
     if (fileRef.current) fileRef.current.value = ''
   }
 
+  /** Kartu PDF dari kode + PIN yang baru saja dibuat (impor / tambah / reset). */
+  const credsCards = (list: Credential[]) => run(async () => {
+    const latest = qc.getQueryData<Row[]>(['participants', eventId]) ?? rows
+    const byCode = new Map(latest.map((r) => [r.code, r]))
+    const cards = list.filter((c) => c.pin).map((c) => (byCode.get(c.code) ? makeCard(byCode.get(c.code)!, c.pin!) : null)).filter((c): c is CardData => !!c)
+    await exportParticipantCards(cards, cardEvent, 'kartu-peserta-baru')
+  }, 'Kartu PDF diunduh')
+
   const credsExcel = (list: Credential[]) => exportExcel('kartu-peserta-kode-pin', [{
     name: 'Kredensial',
     columns: [{ header: 'No Peserta', key: 'participant_number', width: 14 }, { header: 'Nama Lengkap', key: 'full_name', width: 32 }, { header: 'Kode Peserta', key: 'code', width: 16 }, { header: 'PIN', key: 'pin', width: 12 }],
@@ -207,6 +197,7 @@ function Inner({ eventId }: { eventId: string }) {
                 <input ref={fileRef} type="file" accept=".xlsx" hidden onChange={(e) => void doImport(e.target.files?.[0])} />
                 <Button variant="outline" onClick={() => void template()}><FileDown /> Template</Button>
                 <Button variant="outline" loading={busy} onClick={() => fileRef.current?.click()}><Upload /> Import Excel</Button>
+                <Button variant="accent" onClick={() => setCardsOpen(true)} disabled={!rows.length}><IdCard /> Kartu peserta</Button>
                 <Button onClick={openNew}><Plus /> Tambah peserta</Button>
               </>
             )}
@@ -238,6 +229,7 @@ function Inner({ eventId }: { eventId: string }) {
             <div className="ml-auto flex items-center gap-2">
               <span className="text-xs font-semibold text-navy-700">{selected.size} dipilih</span>
               <Button size="sm" variant="outline" onClick={() => void verify([...selected])}><BadgeCheck /> Verifikasi</Button>
+              <Button size="sm" variant="outline" onClick={() => setCardsOpen(true)}><IdCard /> Kartu peserta</Button>
               <Button size="sm" variant="outline" onClick={() => void resetPins([...selected])}><KeyRound /> Reset PIN</Button>
             </div>
           )}
@@ -272,6 +264,7 @@ function Inner({ eventId }: { eventId: string }) {
                     {canEdit && (
                       <TD className="whitespace-nowrap text-right">
                         <Button size="icon" variant="ghost" onClick={() => openEdit(r)} aria-label="Ubah"><Pencil /></Button>
+                        <Button size="icon" variant="ghost" onClick={() => { setSelected(new Set([r.id])); setCardsOpen(true) }} aria-label="Kartu peserta"><IdCard /></Button>
                         <Button size="icon" variant="ghost" onClick={() => void resetPins([r.id])} aria-label="Reset PIN"><KeyRound /></Button>
                         <Button size="icon" variant="ghost" className="text-red-600" onClick={() => void del(r)} aria-label="Hapus"><Trash2 /></Button>
                       </TD>
@@ -284,6 +277,9 @@ function Inner({ eventId }: { eventId: string }) {
           </>
         )}
       </Card>
+
+      <CardsDialog open={cardsOpen} onOpenChange={setCardsOpen} eventId={eventId} eventName={event?.name ?? 'event'} organizer={event?.organizer}
+        all={rows} filtered={filtered} selected={rows.filter((r) => selected.has(r.id))} onDone={() => { setSelected(new Set()); void reload() }} />
 
       {/* Form peserta */}
       <Dialog open={!!draft} onOpenChange={(o) => !o && setDraft(null)}>
@@ -325,7 +321,7 @@ function Inner({ eventId }: { eventId: string }) {
             </Table>
           </DialogBody>
           <DialogFooter>
-            <Button variant="outline" onClick={() => creds && printCards(creds, event?.name ?? '')}><Printer /> Cetak kartu</Button>
+            <Button variant="outline" onClick={() => creds && void credsCards(creds)}><IdCard /> Unduh kartu (PDF)</Button>
             <Button onClick={() => creds && void credsExcel(creds)}><Download /> Unduh Excel</Button>
           </DialogFooter>
         </DialogContent>
@@ -353,7 +349,7 @@ function Inner({ eventId }: { eventId: string }) {
           <DialogFooter>
             {newCreds.length > 0 && (
               <>
-                <Button variant="outline" onClick={() => printCards(newCreds, event?.name ?? '')}><Printer /> Cetak kartu</Button>
+                <Button variant="outline" onClick={() => void credsCards(newCreds)}><IdCard /> Unduh kartu (PDF)</Button>
                 <Button onClick={() => void credsExcel(newCreds)}><Download /> Unduh kode & PIN</Button>
               </>
             )}

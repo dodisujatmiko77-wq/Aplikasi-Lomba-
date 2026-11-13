@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Crown, Expand, Minimize, Radio, Trophy, Users, Wifi, WifiOff } from 'lucide-react'
 import { rpc } from '@/services/db'
+import { publicBaseUrl } from '@/lib/publicUrl'
 import { useLiveState } from '@/hooks/useLiveState'
 import { useFullscreen } from '@/hooks/useFullscreen'
 import { serverNow, useServerNow } from '@/hooks/useServerClock'
@@ -292,7 +293,7 @@ function WaitingScreen({ s, paused }: { s: LiveState; paused: boolean }) {
       </div>
       <div className="flex flex-col items-center" style={{ gap: u(0.5) }}>
         <p className="flex items-center text-navy-200" style={{ gap: u(0.8), fontSize: u(2) }}><Users style={{ width: u(2.2), height: u(2.2) }} />{s.counts.online} dari {s.counts.participants} peserta online</p>
-        <p className="text-navy-300" style={{ fontSize: u(1.7) }}>Peserta masuk di <b className="text-white">{location.host}/peserta</b></p>
+        <p className="text-navy-300" style={{ fontSize: u(1.7) }}>Peserta masuk di <b className="text-white">{publicBaseUrl().replace(/^https?:\/\//, '')}/peserta</b></p>
       </div>
       <p className="italic text-navy-300" style={{ fontSize: u(1.5) }}>Siapa Cepat, Siapa Tepat, Dialah Juara!</p>
     </div>

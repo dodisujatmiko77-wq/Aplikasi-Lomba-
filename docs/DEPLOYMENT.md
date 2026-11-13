@@ -62,6 +62,8 @@ Variabel lingkungan (Netlify: *Site settings → Environment variables*; Vercel:
 - **Vercel**: *Add New → Project* → pilih repo. `vercel.json` sudah mengatur rewrite SPA.
 - Tambahkan domain situs ke **Authentication → URL Configuration → Site URL**.
 
+> **Alamat publik:** isi `PUBLIC_URL` di `public/config.js` (mis. `https://lomba-rangking1.vercel.app`). Dipakai untuk QR pada kartu peserta, tautan yang disalin, dan aplikasi Android.
+
 Tautan penting setelah deploy: `/` (landing), `/login` (admin), `/peserta` (peserta), `/live/<kode-sesi>` (monitor), `/hasil/<kode-sesi>` (hasil publik).
 
 ## 7. Gladi resik (WAJIB) — jangan menyatakan siap sebelum semua centang

@@ -4,4 +4,6 @@
 window.__LR1_CONFIG__ = {
   SUPABASE_URL: 'https://kkfgugyutqetjvhfifng.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable_OYluu7dvBWWN3Unxi_6slA_1w2TY2oX',
+  // Alamat situs untuk QR kartu peserta dan tautan yang dibagikan (juga dipakai aplikasi Android).
+  PUBLIC_URL: 'https://lomba-rangking1.vercel.app',
 }

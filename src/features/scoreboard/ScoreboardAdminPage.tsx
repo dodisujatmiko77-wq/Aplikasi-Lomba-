@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { list } from '@/services/db'
 import { useLevels } from '@/contexts/EventContext'
 import { NeedEvent } from '@/features/auth/guards'
+import { publicBaseUrl } from '@/lib/publicUrl'
 import { EmptyState, Loading, PageHeader, SessionStatusBadge } from '@/components/common'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -16,7 +17,7 @@ function Inner({ eventId }: { eventId: string }) {
     queryKey: ['sessions', eventId], refetchInterval: 10_000,
     queryFn: () => list<CompetitionSession>('competition_sessions', { filters: { event_id: eventId }, order: [{ column: 'created_at', ascending: false }] }),
   })
-  const origin = location.origin
+  const origin = publicBaseUrl()
   const copy = (t: string) => { void navigator.clipboard.writeText(t); toast.success('Tautan disalin') }
   return (
     <div>

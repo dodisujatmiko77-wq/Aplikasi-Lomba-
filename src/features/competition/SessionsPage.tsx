@@ -18,6 +18,7 @@ import { Field } from '@/components/ui/label'
 import { SimpleSelect } from '@/components/ui/select'
 import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/table'
 import { fmtDateTime } from '@/utils/format'
+import { publicBaseUrl } from '@/lib/publicUrl'
 import type { CompetitionSession } from '@/types'
 
 function Inner({ eventId }: { eventId: string }) {
@@ -55,7 +56,7 @@ function Inner({ eventId }: { eventId: string }) {
     if (await confirm({ title: `Hapus sesi "${s.name}"?`, destructive: true, description: 'Hanya sesi draf atau dibatalkan yang dapat dihapus oleh Admin.' }))
       await run(async () => { await remove('competition_sessions', { id: s.id }); await reload() }, 'Sesi dihapus')
   }
-  const copy = (path: string) => { void navigator.clipboard.writeText(location.origin + path); toast.success('Tautan disalin') }
+  const copy = (path: string) => { void navigator.clipboard.writeText(publicBaseUrl() + path); toast.success('Tautan disalin') }
 
   return (
     <div>

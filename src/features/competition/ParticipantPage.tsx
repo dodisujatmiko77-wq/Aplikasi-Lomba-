@@ -26,7 +26,7 @@ function Shell({ children, dark = false }: { children: React.ReactNode; dark?: b
 }
 
 function Login({ onLogin }: { onLogin: (token: string) => void }) {
-  const [code, setCode] = useState('')
+  const [code, setCode] = useState(() => (new URLSearchParams(location.search).get('k') ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 20))
   const [pin, setPin] = useState('')
   const [err, setErr] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)

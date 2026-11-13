@@ -321,7 +321,7 @@
     <li>Isi kolom: <b>No Peserta</b>, <b>Nama Lengkap</b>, <b>Asal Sekolah</b>, <b>Jenjang</b> (SD/SMP/SMA), <b>Kecamatan</b> (sesuai Data Kecamatan), dan <b>PIN</b> (boleh dikosongkan).</li>
     <li>Klik <b>Import Excel</b> dan pilih berkas <code>.xlsx</code> (maksimal 5 MB).</li>
     <li>Jendela <b>Hasil import</b> menampilkan jumlah berhasil/gagal beserta alasan per baris. Baris yang gagal tidak membatalkan baris lain; perbaiki lalu impor ulang — peserta yang sudah ada diperbarui, tidak digandakan.</li>
-    <li><b>Unduh kode &amp; PIN</b> atau <b>Cetak kartu</b> sekarang. PIN baru hanya tampil sekali.</li>
+    <li><b>Unduh kartu (PDF)</b> atau <b>Unduh kode &amp; PIN</b> (Excel) sekarang. PIN baru hanya tampil sekali.</li>
   </ol>
   <figure><img src="img/ad-03-hasil-import.jpg" alt=""><figcaption>Hasil import: baris dengan kecamatan salah dilaporkan, baris lain berhasil.</figcaption></figure>
   <h3>Menambah satu peserta</h3>
@@ -331,10 +331,22 @@
   <ul>
     <li><b>Verifikasi:</b> hanya peserta berstatus <b>Terverifikasi</b> yang dapat dimasukkan ke sesi. Centang peserta lalu klik <b>Verifikasi</b>. Peserta hasil impor otomatis terverifikasi.</li>
     <li><b>Reset PIN:</b> ikon kunci pada satu peserta, atau centang beberapa peserta lalu <b>Reset PIN</b>. PIN lama langsung mati dan login lama peserta keluar.</li>
-    <li><b>Cetak kartu:</b> pada jendela <b>Kode &amp; PIN peserta</b> klik <b>Cetak kartu</b> (tiga kartu per baris) atau <b>Unduh Excel</b>.</li>
+    <li><b>Kartu peserta:</b> tombol biru <b>Kartu peserta</b> membuat kartu PDF siap bagi (lihat di bawah). Pada jendela <b>Kode &amp; PIN peserta</b> tersedia juga <b>Unduh kartu (PDF)</b> dan <b>Unduh Excel</b>.</li>
     <li><b>Export:</b> tombol <b>Export</b> mengunduh daftar peserta sesuai penyaring.</li>
   </ul>
   <figure><img src="img/ad-04-kode-pin.jpg" alt=""><figcaption>Kode &amp; PIN ditampilkan sekali. Simpan atau cetak sebelum menutup.</figcaption></figure>
+  <h3>Kartu peserta (siap dibagikan)</h3>
+  <p>Tombol <b>Kartu peserta</b> menghasilkan satu berkas PDF berisi kartu yang siap dicetak dan dipotong: <b>8 kartu per halaman A4</b>. Setiap kartu memuat foto, nama, sekolah, nomor, jenjang, kecamatan, <b>kode peserta</b>, <b>PIN</b>, dan <b>QR</b> untuk masuk.</p>
+  <ol class="steps">
+    <li>Klik <b>Kartu peserta</b> di atas tabel. Untuk satu peserta gunakan ikon kartu pada barisnya; untuk beberapa peserta, centang dulu lalu klik <b>Kartu peserta</b>.</li>
+    <li>Pilih untuk siapa: <b>yang dicentang</b>, <b>sesuai penyaring</b> (mis. satu kecamatan), atau <b>semua peserta</b>. Foto dapat disertakan atau tidak.</li>
+    <li>Klik <b>Unduh contoh</b> untuk memeriksa tampilan satu kartu tanpa mengubah PIN.</li>
+    <li>Klik <b>Buat … kartu (PDF)</b>, baca peringatan, lalu konfirmasi. Berkas PDF otomatis terunduh.</li>
+    <li>Cetak, lalu potong mengikuti garis putus-putus. Bagikan langsung kepada peserta.</li>
+  </ol>
+  <figure><img src="img/ad-22-kartu-dialog.jpg" alt=""><figcaption>Jendela Kartu peserta: pilih untuk siapa kartu dibuat.</figcaption></figure>
+  <figure><img style="max-width:62%" src="img/ad-23-kartu-contoh.jpg" alt=""><figcaption>Contoh kartu peserta (data contoh). QR membuka halaman masuk dengan kode sudah terisi; peserta hanya mengetik PIN.</figcaption></figure>
+  <div class="box warn"><b class="t">Membuat kartu = mengganti PIN</b>PIN disimpan terenkripsi sehingga tidak bisa ditampilkan lagi. Karena itu setiap kartu memakai <b>PIN baru</b>, dan PIN lama langsung tidak berlaku (peserta yang sedang masuk dikeluarkan). Buat kartu <u>sebelum</u> dibagikan. Setelah dibagikan, buat ulang hanya untuk peserta yang lupa PIN. Simpan berkas PDF dengan aman.</div>
   <div class="box warn"><b class="t">Kartu peserta bersifat rahasia</b>Bagikan kartu langsung kepada masing-masing peserta. Satu akun hanya dapat dipakai di satu HP pada satu waktu; login baru mengeluarkan login lama.</div>
   <div class="box"><b class="t">Peserta yang sudah menjawab</b>Peserta yang sudah memiliki riwayat jawaban tidak dapat dihapus. Ubah <b>status keikutsertaan</b> menjadi Mundur atau Diskualifikasi.</div>
 
@@ -522,8 +534,8 @@
 
   <h2>C2. Masuk ke ruang lomba</h2>
   <ol class="steps">
-    <li>Pindai <b>QR</b> yang ditampilkan panitia, atau buka <code>lomba-rangking1.vercel.app/peserta</code>.</li>
-    <li>Ketik <b>Kode peserta</b> (huruf besar otomatis) dan <b>PIN</b>.</li>
+    <li>Pindai <b>QR di kartu peserta</b> Anda — <b>kode peserta terisi otomatis</b>. Atau buka <code>lomba-rangking1.vercel.app/peserta</code> dan ketik kodenya.</li>
+    <li>Ketik <b>PIN</b> dari kartu (kode peserta sudah terisi bila Anda memindai QR).</li>
     <li>Tekan <b>Masuk</b>.</li>
     <li>Jika muncul <b>“Anda sudah masuk”</b>, berarti berhasil. Tunggu panitia memulai. <u>Jangan menutup halaman ini.</u></li>
   </ol>

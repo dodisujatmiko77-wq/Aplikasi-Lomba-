@@ -1,0 +1,9 @@
+LOMBA RANGKING 1 — paket siap hosting Netlify
+==============================================
+1. Buka config.js (Notepad), isi SUPABASE_URL dan SUPABASE_ANON_KEY (Supabase > Project Settings > API). Simpan.
+2. Buka https://app.netlify.com/drop lalu seret SELURUH folder ini (bukan zip-nya) ke halaman tersebut.
+   (Atau: Netlify > Add new site > Deploy manually > seret folder.)
+3. Di Supabase > Authentication > URL Configuration, isi Site URL dengan alamat situs Netlify Anda.
+4. Selesai: / (beranda), /login (admin), /peserta, /live/KODE (monitor).
+Mengubah konfigurasi nanti: edit config.js lalu unggah ulang folder.
+Panduan lengkap (migrasi database, Superadmin pertama, gladi resik): repo GitHub > docs/DEPLOYMENT.md

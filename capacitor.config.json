@@ -1,0 +1,18 @@
+{
+  "appId": "id.sch.smpn1baradatu.lombarangking1",
+  "appName": "Lomba Rangking 1",
+  "webDir": "dist",
+  "backgroundColor": "#0b1b3f",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "native",
+      "style": "LIGHT"
+    }
+  }
+}

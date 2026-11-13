@@ -197,6 +197,18 @@ export default function ParticipantPage() {
   const [token, setToken] = useState<string | null>(store.get())
   const fetcher = useCallback(() => rpc<ParticipantState & { ok: boolean; code?: string }>('participant_get_state', { p_token: token }), [token])
   const { data, link, refresh } = useLiveState<ParticipantState & { ok: boolean }>({ fetcher, enabled: !!token, jitterMs: 400, fastPollMs: 2500, slowPollMs: 10000 })
+  // Jaga layar HP tetap menyala selama peserta masuk (tidak mati di tengah soal).
+  useEffect(() => {
+    if (!token || !('wakeLock' in navigator)) return
+    let lock: WakeLockSentinel | null = null
+    const acquire = async () => {
+      try { lock = await navigator.wakeLock.request('screen') } catch { /* tidak didukung atau ditolak: abaikan */ }
+    }
+    void acquire()
+    const onVisible = () => { if (document.visibilityState === 'visible') void acquire() }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => { document.removeEventListener('visibilitychange', onVisible); void lock?.release().catch(() => undefined) }
+  }, [token])
   const logout = () => { void rpc('participant_logout', { p_token: token }).catch(() => undefined); store.set(null); setToken(null) }
 
   useEffect(() => { if (data && (data as { ok: boolean; code?: string }).ok === false) { store.set(null); setToken(null) } }, [data])

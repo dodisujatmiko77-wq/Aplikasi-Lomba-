@@ -15,9 +15,13 @@
     "test:load": "node scripts/simulate-135.mjs",
     "test:all": "npm run test && npm run test:db && npm run test:load",
     "test:ui": "node scripts/ui-smoke.mjs && node scripts/ui-reconnect.mjs && node scripts/ui-export.mjs",
-    "dev:api": "node scripts/dev-api.mjs"
+    "dev:api": "node scripts/dev-api.mjs",
+    "android:sync": "npm run build && cap sync android",
+    "android:open": "cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/poppins": "^5.3.0",
     "@radix-ui/react-alert-dialog": "^1.2.1",
@@ -47,6 +51,7 @@
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.2",
     "@types/node": "^26.6.6",
     "@types/pg": "^8.23.1",
     "@types/react": "^18.3.31",

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lomba Rangking 1</string>
+    <string name="title_activity_main">Lomba Rangking 1</string>
+    <string name="package_name">id.sch.smpn1baradatu.lombarangking1</string>
+    <string name="custom_url_scheme">id.sch.smpn1baradatu.lombarangking1</string>
+</resources>

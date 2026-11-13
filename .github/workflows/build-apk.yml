@@ -1,0 +1,69 @@
+name: Build APK Android
+# Membangun APK dari aplikasi web (Capacitor). Hasil: Artifacts pada run ini + Release "apk-terbaru".
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+    branches: ['claude/**', main]
+    paths: ['android/**', 'src/**', 'public/**', 'index.html', 'package.json', 'package-lock.json', 'capacitor.config.json', '.github/workflows/build-apk.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      APP_VERSION_CODE: ${{ github.run_number }}
+      APP_VERSION_NAME: 1.0.${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - name: Build aplikasi web
+        run: npm run build
+      - name: Salin ke proyek Android
+        run: npx cap sync android
+      - name: Kunci rilis (opsional, dari GitHub Secrets)
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          echo "KEYSTORE_FILE=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+          echo "KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> "$GITHUB_ENV"
+          echo "KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> "$GITHUB_ENV"
+      - name: Bangun APK
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+      - name: Beri nama dan verifikasi tanda tangan
+        run: |
+          mkdir -p out
+          cp android/app/build/outputs/apk/release/app-release.apk out/Lomba-Rangking-1.apk
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --print-certs out/Lomba-Rangking-1.apk | head -5
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Lomba-Rangking-1-APK
+          path: out/Lomba-Rangking-1.apk
+          if-no-files-found: error
+      - name: Terbitkan sebagai Release "apk-terbaru"
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-terbaru
+          name: APK terbaru (build ${{ github.run_number }})
+          body: |
+            APK Android Lomba Rangking 1 — versi 1.0.${{ github.run_number }}.
+            Unduh **Lomba-Rangking-1.apk**, pasang di HP (izinkan "pasang dari sumber tidak dikenal").
+          prerelease: true
+          files: out/Lomba-Rangking-1.apk
+          overwrite_files: true

@@ -261,18 +261,40 @@ function ResultScreen({ s }: { s: LiveState }) {
   )
 }
 
-function WaitingScreen({ s, paused }: { s: LiveState; paused: boolean }) {
+/** Logo aplikasi + logo penyelenggara (bila event punya logo) berdampingan. */
+function Logos({ s, size }: { s: LiveState; size: number }) {
   return (
-    <div className="flex h-full flex-col items-center justify-center text-center">
-      <img src={s.session.logo_url || '/logo.png'} alt="" className="object-contain" style={{ height: u(s.session.logo_url ? 11 : 17), maxWidth: u(26) }} />
-      <p className="font-heading font-extrabold leading-tight text-balance" style={{ fontSize: u(5), marginTop: u(2.4) }}>{s.session.event_name}</p>
-      <p className="font-heading font-bold text-electric-400" style={{ fontSize: u(3), marginTop: u(0.8) }}>{s.session.name} · {s.session.level}</p>
-      <div className="inline-flex items-center rounded-full bg-white/10" style={{ gap: u(1.2), padding: `${u(0.8)} ${u(2.4)}`, marginTop: u(3), fontSize: u(2.4) }}>
-        {paused ? <span className="font-bold text-amber-300">⏸ Lomba dijeda</span> : <><span className="h-[0.6em] w-[0.6em] animate-pulse rounded-full bg-emerald-400" /> {s.session.status === 'draft' ? 'Sesi belum dibuka' : s.notice ?? 'Menunggu operator memulai…'}</>}
+    <div className="flex items-center justify-center" style={{ gap: u(2.4) }}>
+      <img src="/logo.png" alt="Lomba Rangking 1" className="object-contain" style={{ height: u(s.session.logo_url ? size : size * 1.15), maxWidth: u(22) }} />
+      {s.session.logo_url && (
+        <>
+          <span className="w-px self-stretch bg-white/25" aria-hidden />
+          <img src={s.session.logo_url} alt={s.session.organizer ?? 'Penyelenggara'} className="object-contain" style={{ height: u(size * 0.85), maxWidth: u(16) }} />
+        </>
+      )}
+    </div>
+  )
+}
+
+function WaitingScreen({ s, paused }: { s: LiveState; paused: boolean }) {
+  const draft = s.session.status === 'draft'
+  return (
+    <div className="flex h-full flex-col items-center justify-evenly overflow-hidden text-center">
+      <Logos s={s} size={10} />
+      <div>
+        <p className="font-heading font-extrabold leading-tight text-balance" style={{ fontSize: u(4.2) }}>{s.session.event_name}</p>
+        <p className="font-heading font-bold text-electric-400" style={{ fontSize: u(2.6), marginTop: u(0.4) }}>{s.session.name}</p>
       </div>
-      <p className="flex items-center text-navy-200" style={{ gap: u(0.8), fontSize: u(2.2), marginTop: u(2.4) }}><Users style={{ width: u(2.4), height: u(2.4) }} />{s.counts.online} dari {s.counts.participants} peserta online</p>
-      <p className="text-navy-300" style={{ fontSize: u(1.8), marginTop: u(3) }}>Peserta masuk di <b className="text-white">{location.host}/peserta</b></p>
-      <p className="italic text-navy-300" style={{ fontSize: u(1.7), marginTop: u(0.6) }}>Siapa Cepat, Siapa Tepat, Dialah Juara!</p>
+      <div className="inline-flex items-center rounded-full bg-white/10" style={{ gap: u(1.2), padding: `${u(0.6)} ${u(2.2)}`, fontSize: u(2.2) }}>
+        {paused ? <span className="font-bold text-amber-300">⏸ Lomba dijeda</span> : (
+          <><span className={cn('h-[0.6em] w-[0.6em] rounded-full', draft ? 'bg-slate-400' : 'animate-pulse bg-emerald-400')} /> {draft ? 'Sesi belum dibuka' : s.notice ?? 'Menunggu operator memulai…'}</>
+        )}
+      </div>
+      <div className="flex flex-col items-center" style={{ gap: u(0.5) }}>
+        <p className="flex items-center text-navy-200" style={{ gap: u(0.8), fontSize: u(2) }}><Users style={{ width: u(2.2), height: u(2.2) }} />{s.counts.online} dari {s.counts.participants} peserta online</p>
+        <p className="text-navy-300" style={{ fontSize: u(1.7) }}>Peserta masuk di <b className="text-white">{location.host}/peserta</b></p>
+      </div>
+      <p className="italic text-navy-300" style={{ fontSize: u(1.5) }}>Siapa Cepat, Siapa Tepat, Dialah Juara!</p>
     </div>
   )
 }
@@ -341,10 +363,11 @@ export default function LiveScoreboardPage() {
     <Frame>
       <div className="absolute inset-0 flex flex-col" style={{ padding: `${u(1.6)} ${u(2.6)} ${u(2)}` }}>
         <header className="flex shrink-0 items-center" style={{ gap: u(1.4), marginBottom: u(1.2) }}>
-          {s.session.logo_url ? <img src={s.session.logo_url} alt="" className="rounded-xl object-cover" style={{ width: u(3.6), height: u(3.6) }} /> : <img src="/logo-mark.png" alt="" className="object-contain" style={{ width: u(4.4), height: u(4.4) }} />}
+          <img src="/logo-mark.png" alt="" className="object-contain" style={{ width: u(4.4), height: u(4.4) }} />
+          {s.session.logo_url && <img src={s.session.logo_url} alt="" className="object-contain" style={{ width: u(4), height: u(4) }} />}
           <div className="min-w-0 leading-tight">
             <p className="truncate font-heading font-bold" style={{ fontSize: u(1.9) }}>{s.session.event_name}</p>
-            <p className="truncate text-navy-200" style={{ fontSize: u(1.3) }}>{s.session.level} · {s.session.name}{s.round ? ` · ${s.round.name} (${LABELS.roundMode[s.round.mode]})` : ''}</p>
+            <p className="truncate text-navy-200" style={{ fontSize: u(1.3) }}>{s.session.level}{s.round ? ` · ${s.round.name} (${LABELS.roundMode[s.round.mode]})` : ''}</p>
           </div>
           <div className="ml-auto flex items-center" style={{ gap: u(1.2), fontSize: u(1.3) }}>
             <span className="rounded-full bg-white/10 text-navy-100" style={{ padding: `${u(0.3)} ${u(1)}` }}><Users className="mr-1 inline" style={{ width: u(1.4), height: u(1.4) }} />{s.counts.active} aktif</span>
@@ -352,9 +375,13 @@ export default function LiveScoreboardPage() {
               {s.session.status === 'running' && <Radio className="mr-1 inline animate-pulse" style={{ width: u(1.3), height: u(1.3) }} />}{LABELS.sessionStatus[s.session.status].toUpperCase()}
             </span>
             {link !== 'live' && <span className="text-amber-300" title="Mode cadangan (polling)">{link === 'offline' ? <WifiOff style={{ width: u(1.5), height: u(1.5) }} /> : <Wifi style={{ width: u(1.5), height: u(1.5) }} />}</span>}
+            <button onClick={toggle} aria-label={isFullscreen ? 'Keluar layar penuh' : 'Layar penuh'}
+              className={cn('rounded-full bg-white/10 text-white transition-opacity hover:bg-white/25', hideUi && 'opacity-0')} style={{ padding: u(0.7) }}>
+              {isFullscreen ? <Minimize style={{ width: u(1.6), height: u(1.6) }} /> : <Expand style={{ width: u(1.6), height: u(1.6) }} />}
+            </button>
           </div>
         </header>
-        <main className="relative min-h-0 flex-1">
+        <main className="relative min-h-0 flex-1 overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div key={screen + (screen === 'question' || screen === 'result' || screen === 'processing' ? q?.id : '')} className="h-full" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.28 }}>
               {screen === 'waiting' && <WaitingScreen s={s} paused={paused} />}
@@ -367,14 +394,10 @@ export default function LiveScoreboardPage() {
             </motion.div>
           </AnimatePresence>
         </main>
-        <footer className="flex shrink-0 justify-between text-navy-300" style={{ fontSize: u(1.1), marginTop: u(0.8) }}>
+        <footer className="flex shrink-0 justify-between gap-[1cqw] text-navy-300" style={{ fontSize: u(1.2), marginTop: u(0.8) }}>
           <span>LOMBA RANGKING 1 · Produk UPT SMPN 1 Baradatu</span>{s.session.organizer && <span>Penyelenggara: {s.session.organizer}</span>}<span>Dikembangkan oleh Dodi Sujatmiko</span>
         </footer>
       </div>
-      <button onClick={toggle} aria-label={isFullscreen ? 'Keluar layar penuh' : 'Layar penuh'}
-        className={cn('absolute bottom-[3%] right-[2%] rounded-full bg-white/10 p-[0.9cqw] text-white backdrop-blur transition-opacity hover:bg-white/25', hideUi && 'opacity-0')}>
-        {isFullscreen ? <Minimize style={{ width: u(1.8), height: u(1.8) }} /> : <Expand style={{ width: u(1.8), height: u(1.8) }} />}
-      </button>
     </Frame>
   )
 }

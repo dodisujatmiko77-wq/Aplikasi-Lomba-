@@ -25,7 +25,7 @@ import type {
   EliminationRule, ParticipantScope,
 } from '@/types'
 
-interface RoundQ { id: string; round_id: string; question_id: string; sequence: number; status: string }
+interface RoundQ { id: string; round_id: string; question_id: string; sequence: number; status: string; duration_seconds: number }
 interface SessionMember { id: string; participant_id: string }
 type RoundDraft = Partial<CompetitionRound> & ScoringValues & { name: string; mode: RoundMode }
 
@@ -164,6 +164,22 @@ export default function SessionSetupPage() {
     setAdding(false)
     if (ok) setAddTo(null)
   }
+  const setDuration = async (q: RoundQ, el: HTMLInputElement) => {
+    const v = Math.round(Number(el.value))
+    if (v === q.duration_seconds) return
+    if (!Number.isFinite(v) || v < 3 || v > 600) {
+      el.value = String(q.duration_seconds)
+      return void run(async () => { throw new Error('Durasi harus 3–600 detik') })
+    }
+    await run(async () => { await update('competition_questions', { id: q.id }, { duration_seconds: v }); await reload() }, `Soal ${q.sequence}: ${v} detik`)
+  }
+  const setAllDurations = async (r: CompetitionRound) => {
+    const raw = await confirm({ title: `Samakan durasi semua soal di ${r.name}`, promptLabel: 'Durasi menjawab (detik, 3–600)', confirmLabel: 'Terapkan', description: 'Mengganti durasi seluruh soal yang belum tayang pada babak ini.' })
+    if (typeof raw !== 'string') return
+    const v = Math.round(Number(raw))
+    if (!(v >= 3 && v <= 600)) return void run(async () => { throw new Error('Durasi harus 3–600 detik') })
+    await run(async () => { await update('competition_questions', { round_id: r.id, status: 'pending' }, { duration_seconds: v }); await reload() }, `Durasi semua soal diatur ${v} detik`)
+  }
   const delQ = (qid: string) => run(async () => { await remove('competition_questions', { id: qid }); await reload() })
 
   const openRoster = async (r: CompetitionRound) => {
@@ -226,13 +242,27 @@ export default function SessionSetupPage() {
                       <li key={q.id} className="flex items-center gap-3 px-3 py-2 text-sm">
                         <span className="tabular w-6 font-semibold text-navy-600">{q.sequence}</span>
                         <span className="line-clamp-1 flex-1">{qText(q.question_id)}</span>
+                        {canControl && r.status === 'pending' && q.status === 'pending' ? (
+                          <label className="flex items-center gap-1 text-xs text-muted-foreground" title="Durasi menjawab soal ini">
+                            <input key={`${q.id}-${q.duration_seconds}`} type="number" min={3} max={600} defaultValue={q.duration_seconds} aria-label={`Durasi soal ${q.sequence} (detik)`}
+                              onBlur={(e) => void setDuration(q, e.target)} onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
+                              className={`tabular h-8 w-16 rounded-md border bg-white px-2 text-right text-sm ${q.duration_seconds !== r.duration_seconds ? 'border-flame-500 font-semibold text-flame-600' : 'border-input text-foreground'}`} />
+                            dtk
+                          </label>
+                        ) : <span className="tabular text-xs text-muted-foreground">{q.duration_seconds} dtk</span>}
                         <Badge variant={q.status === 'pending' ? 'gray' : q.status === 'cancelled' ? 'red' : 'blue'}>{LABELS.cqStatus[q.status as keyof typeof LABELS.cqStatus]}</Badge>
                         {canControl && r.status === 'pending' && <Button size="icon" variant="ghost" onClick={() => void delQ(q.id)} aria-label="Keluarkan soal"><Trash2 /></Button>}
                       </li>
                     ))}
                   </ol>
                 ) : <p className="text-sm text-muted-foreground">Belum ada soal.</p>}
-                {canControl && r.status === 'pending' && <Button size="sm" className="mt-3" variant="outline" onClick={() => openAdd(r)}><ListPlus /> Tambah soal / paket</Button>}
+                {canControl && r.status === 'pending' && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" onClick={() => openAdd(r)}><ListPlus /> Tambah soal / paket</Button>
+                    {!!questionsOf(r.id).length && <Button size="sm" variant="outline" onClick={() => void setAllDurations(r)}>Samakan durasi semua soal</Button>}
+                  </div>
+                )}
+                {!!questionsOf(r.id).length && r.status === 'pending' && <p className="mt-2 text-xs text-muted-foreground">Durasi bawaan babak {r.duration_seconds} dtk. Angka oranye = durasi khusus soal tersebut. Setelah soal tayang durasinya terkunci.</p>}
               </CardContent>
             </Card>
           ))}

@@ -270,6 +270,17 @@ await test('45 peserta login & bergabung ke sesi yang dibuka', async () => {
   eq((await live()).counts.online, 45)
 })
 
+section('6b. Durasi per soal')
+await test('durasi per soal dapat diatur admin selama belum tayang (3–600 dtk); admin lain ditolak', async () => {
+  const ids = (await su.query(`select id from competition_questions where round_id = $1 order by sequence`, [round1.id])).rows.map((r) => r.id)
+  global.CQ4 = ids[3]
+  eq((await api.sql(adminA, `update competition_questions set duration_seconds = 45 where id = $1`, [ids[3]])).rowCount, 1)
+  await rejects(api.sql(adminA, `update competition_questions set duration_seconds = 2 where id = $1`, [ids[2]]), /violates check/)
+  await rejects(api.sql(adminA, `update competition_questions set duration_seconds = 601 where id = $1`, [ids[2]]), /violates check/)
+  eq((await api.sql(adminB, `update competition_questions set duration_seconds = 99 where id = $1`, [ids[2]])).rowCount, 0, 'admin event lain tidak boleh')
+  eq((await api.sql(adminA, `update competition_questions set duration_seconds = 20 where round_id = $1 and status = 'pending' and sequence = 3`, [round1.id])).rowCount, 1, 'samakan massal')
+})
+
 section('7. Soal aktif: kerahasiaan kunci, skor, deadline, jawaban ganda')
 let cq1
 await test('selama hitung mundur soal belum terlihat dan jawaban ditolak', async () => {
@@ -419,6 +430,16 @@ await test('jawaban singkat dinormalisasi di server (huruf besar/kecil & spasi)'
   await api.rpc(adminA, 'close_question', { p_session_id: session.id })
   await api.rpc(adminA, 'reveal_answer', { p_session_id: session.id })
   eq((await live()).question.reveal.accepted, ['9', 'sembilan'])
+})
+await test('soal 4 memakai durasi khususnya (45 dtk): deadline, countdown, dan bonus mengikuti 45 dtk; terkunci setelah tayang', async () => {
+  await api.rpc(adminA, 'next_question', { p_session_id: session.id })
+  const t = await one(`select extract(epoch from deadline_at - started_at) as d, duration_seconds from competition_questions where id = $1`, [global.CQ4])
+  eq([Number(t.d), t.duration_seconds], [45, 45])
+  const l = await live()
+  eq([l.upcoming.duration_seconds, l.upcoming.sequence], [45, 4])
+  near(await val(`select public.calculate_score(true, 100, 50, 0, 45000, 30000)`) ?? 0, 133.33, 0.01)
+  await rejects(api.sql(adminA, `update competition_questions set duration_seconds = 10 where id = $1`, [global.CQ4]), /kontrol pertandingan/)
+  await api.rpc(adminA, 'close_question', { p_session_id: session.id })
 })
 await test('akhiri babak → layar leaderboard', async () => {
   await api.rpc(adminA, 'set_display', { p_session_id: session.id, p_screen: 'leaderboard' })

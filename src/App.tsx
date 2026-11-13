@@ -24,6 +24,9 @@ const SessionsPage = lazy(() => import('@/features/competition/SessionsPage'))
 const SessionSetupPage = lazy(() => import('@/features/competition/SessionSetupPage'))
 const ControlPanelPage = lazy(() => import('@/features/competition/ControlPanelPage'))
 const ParticipantPage = lazy(() => import('@/features/competition/ParticipantPage'))
+const LiveScoreboardPage = lazy(() => import('@/features/scoreboard/LiveScoreboardPage'))
+const PublicResultsPage = lazy(() => import('@/features/scoreboard/PublicResultsPage'))
+const ScoreboardAdminPage = lazy(() => import('@/features/scoreboard/ScoreboardAdminPage'))
 /* ROUTE-IMPORTS */
 
 function NotFound() {
@@ -43,6 +46,8 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/peserta" element={<ParticipantPage />} />
+        <Route path="/live/:code" element={<LiveScoreboardPage />} />
+        <Route path="/hasil/:code" element={<PublicResultsPage />} />
         {/* PUBLIC-ROUTES */}
         <Route path="/admin" element={<RequireAdmin><EventProvider><AdminLayout /></EventProvider></RequireAdmin>}>
           <Route index element={<DashboardPage />} />
@@ -55,6 +60,7 @@ export default function App() {
           <Route path="sessions" element={<SessionsPage />} />
           <Route path="sessions/:id" element={<SessionSetupPage />} />
           <Route path="control/:id" element={<ControlPanelPage />} />
+          <Route path="scoreboard" element={<ScoreboardAdminPage />} />
           {/* ADMIN-ROUTES */}
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admins" element={<RequireSuperadmin><AdminsPage /></RequireSuperadmin>} />

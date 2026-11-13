@@ -10,11 +10,11 @@ import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import type { AdminAssignment, Profile, Role } from '@/types'
 
-const PERMS: { key: keyof AdminAssignment; label: string }[] = [
-  { key: 'can_manage_participants', label: 'Kelola peserta' },
-  { key: 'can_manage_questions', label: 'Kelola soal' },
-  { key: 'can_control_competition', label: 'Kontrol pertandingan' },
-  { key: 'can_view_reports', label: 'Lihat laporan' },
+const PERMS: { key: keyof AdminAssignment; label: string; short: string }[] = [
+  { key: 'can_manage_participants', label: 'Kelola peserta', short: 'Peserta' },
+  { key: 'can_manage_questions', label: 'Kelola soal', short: 'Soal' },
+  { key: 'can_control_competition', label: 'Kontrol pertandingan', short: 'Kontrol' },
+  { key: 'can_view_reports', label: 'Lihat laporan', short: 'Laporan' },
 ]
 
 export default function AccessPage() {
@@ -67,11 +67,11 @@ export default function AccessPage() {
               ))}
             </CardContent>
           </Card>
-          <Card>
+          <Card className="min-w-0">
             <CardHeader><CardTitle>Event untuk {current?.full_name || current?.email}</CardTitle><CardDescription>Aktifkan event, lalu atur izin per modul.</CardDescription></CardHeader>
             {!events.length ? <EmptyState title="Belum ada event" /> : (
               <Table>
-                <THead><TR><TH>Event</TH><TH>Ditugaskan</TH>{PERMS.map((p) => <TH key={p.key} className="text-center">{p.label}</TH>)}</TR></THead>
+                <THead><TR><TH>Event</TH><TH>Ditugaskan</TH>{PERMS.map((p) => <TH key={p.key} className="text-center" title={p.label}>{p.short}</TH>)}</TR></THead>
                 <TBody>
                   {events.map((e) => {
                     const a = asg(e.id)

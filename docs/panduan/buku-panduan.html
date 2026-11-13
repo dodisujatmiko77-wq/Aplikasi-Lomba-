@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Buku Panduan Pengguna — Lomba Rangking 1</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm 20mm 18mm; }
+  :root { --navy:#0b1b3f; --blue:#1f7bff; --orange:#f97316; --gray:#5b6577; --line:#dfe5ef; --soft:#f3f6fb; }
+  * { box-sizing: border-box; }
+  html { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; color:#1a2238; font-size: 10.5pt; line-height: 1.55; }
+  body { counter-reset: fig; margin:0; }
+  h1,h2,h3 { font-family: 'Poppins','Inter',Arial,sans-serif; color: var(--navy); line-height:1.25; }
+  h1 { font-size: 22pt; margin: 0 0 6mm; }
+  h2 { font-size: 15pt; margin: 9mm 0 3mm; padding-bottom: 1.5mm; border-bottom: 2px solid var(--blue); break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 6mm 0 2mm; break-after: avoid; }
+  p { margin: 0 0 3mm; }
+  ul,ol { margin: 0 0 3.5mm; padding-left: 6mm; }
+  li { margin-bottom: 1.2mm; }
+  .cover { height: 247mm; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; background:#fff; }
+  .cover img.logo { width: 120mm; margin-bottom: 10mm; }
+  .cover h1 { font-size: 30pt; margin-bottom: 2mm; }
+  .cover .tag { font-style: italic; color: var(--gray); margin-bottom: 14mm; font-size: 12pt; }
+  .cover .roles { display:flex; gap: 4mm; margin-bottom: 18mm; }
+  .cover .roles span { padding: 2.5mm 6mm; border-radius: 99px; color:#fff; font-weight:600; font-size: 11pt; }
+  .cover .who { color: var(--gray); font-size: 10.5pt; line-height: 1.8; border-top: 1px solid var(--line); padding-top: 6mm; width: 120mm; }
+  .cover .who b { color: var(--navy); }
+  .part { height: 247mm; display:flex; flex-direction:column; justify-content:center; padding: 0 12mm; color:#fff; border-radius: 6mm; break-before: page; break-after: page; }
+  .part .k { letter-spacing: .25em; text-transform: uppercase; font-size: 10pt; opacity:.85; }
+  .part h1 { color:#fff; font-size: 34pt; margin: 4mm 0; }
+  .part p { font-size: 12pt; max-width: 130mm; opacity:.95; }
+  .part.a { background: linear-gradient(150deg,#0b1b3f,#1c3d84); }
+  .part.b { background: linear-gradient(150deg,#0b1b3f,#0d63e6); }
+  .part.c { background: linear-gradient(150deg,#c2410c,#f97316); }
+  .toc h1 { margin-bottom: 4mm; }
+  .toc > ol { column-count: 2; column-gap: 10mm; }
+  .toc > ol > li { break-inside: avoid; }
+  .toc ol { list-style: none; padding: 0; counter-reset: p; }
+  .toc > ol > li { font-weight:700; margin-top: 4mm; color: var(--navy); }
+  .toc ol ol { padding-left: 6mm; margin-top: 1.5mm; }
+  .toc ol ol li { font-weight: 400; color: #1a2238; margin: 0; padding: 0.4mm 0; border-bottom: 1px dotted var(--line); font-size: 9.5pt; }
+  .toc a { color: inherit; text-decoration: none; }
+  figure { margin: 3mm 0 5mm; break-inside: avoid; text-align:center; }
+  figure img { max-width: 84%; border: 1px solid var(--line); border-radius: 2mm; box-shadow: 0 1px 4px rgba(11,27,63,.12); }
+  figure.tall img { max-height: 105mm; width:auto; max-width: 84%; }
+  figcaption { counter-increment: fig; font-size: 9pt; color: var(--gray); margin-top: 1.5mm; }
+  figcaption::before { content: "Gambar " counter(fig) ". "; font-weight: 700; color: var(--navy); }
+  .phones { display:flex; gap: 4mm; justify-content:center; margin: 3mm 0 5mm; break-inside: avoid; }
+  .phones figure { margin:0; flex: 0 1 40mm; }
+  .phones img { width: 40mm; border-radius: 4mm; }
+  .phones.big figure { flex: 0 1 54mm; }
+  .phones.big img { width: 54mm; }
+  .box { border-left: 4px solid var(--blue); background: var(--soft); padding: 3mm 4mm; margin: 3mm 0 4mm; border-radius: 0 2mm 2mm 0; break-inside: avoid; }
+  .box.warn { border-color: var(--orange); background: #fff5ec; }
+  .box.ok { border-color: #16a34a; background: #effaf2; }
+  .box b.t { display:block; margin-bottom: 1mm; color: var(--navy); }
+  table { width:100%; border-collapse: collapse; margin: 2mm 0 5mm; font-size: 9.5pt; break-inside: avoid; }
+  th { background: var(--navy); color:#fff; text-align:left; padding: 1.8mm 2.5mm; font-weight:600; }
+  td { padding: 1.8mm 2.5mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafd; }
+  code, kbd { font-family: ui-monospace, Menlo, Consolas, monospace; background: #eef2f9; padding: 0 1.2mm; border-radius: 1mm; font-size: 9.5pt; }
+  .steps { counter-reset: s; list-style:none; padding-left: 0; }
+  .steps > li { counter-increment: s; position: relative; padding-left: 9mm; margin-bottom: 2.5mm; }
+  .steps > li::before { content: counter(s); position:absolute; left:0; top:0; width:6mm; height:6mm; border-radius:50%; background: var(--blue); color:#fff; text-align:center; font-size: 9pt; font-weight:700; line-height: 6mm; }
+  .pe-big { font-size: 12pt; }
+  .pe-big h2 { border-color: var(--orange); }
+  .pe-big .steps > li::before { background: var(--orange); }
+  .pb { break-before: page; }
+  .checklist li { list-style: none; position: relative; padding-left: 7mm; }
+  .checklist li::before { content: "☐"; position:absolute; left:0; color: var(--blue); font-size: 12pt; line-height: 1.2; }
+</style>
+</head>
+<body>
+
+<!-- ================= SAMPUL ================= -->
+<section class="cover">
+  <img class="logo" src="img/logo.png" alt="Lomba Rangking 1">
+  <h1>Buku Panduan Pengguna</h1>
+  <p class="tag">“Siapa Cepat, Siapa Tepat, Dialah Juara!”</p>
+  <div class="roles"><span style="background:#1c3d84">Superadmin</span><span style="background:#0d63e6">Admin / Operator</span><span style="background:#f97316">Peserta</span></div>
+  <div class="who">
+    <div>Aplikasi: <b>Lomba Rangking 1</b> — Competition Management &amp; Real-Time Scoring System</div>
+    <div>Produk: <b>UPT SMPN 1 Baradatu</b></div>
+    <div>Penyelenggara lomba: <b>PGRI Kabupaten Way Kanan</b></div>
+    <div>Dikembangkan oleh: <b>Dodi Sujatmiko</b></div>
+    <div style="margin-top:3mm">Edisi November 2026</div>
+  </div>
+</section>
+
+<!-- ================= DAFTAR ISI ================= -->
+<section class="toc pb">
+  <h1>Daftar Isi</h1>
+  <ol>
+    <li><a href="#pengantar">Pengantar</a>
+      <ol><li>Tentang aplikasi</li><li>Peran dan hak akses</li><li>Alamat penting</li><li>Cara skor dihitung</li><li>Alur satu lomba dari awal sampai akhir</li></ol></li>
+    <li><a href="#bagian-a">Bagian A — Panduan Superadmin</a>
+      <ol><li>A1. Masuk dan mengenal tampilan</li><li>A2. Dashboard</li><li>A3. Event Perlombaan</li><li>A4. Data Kecamatan dan Data Jenjang</li><li>A5. Manajemen Admin</li><li>A6. Hak Akses</li><li>A7. Pengaturan event: penilaian dan pengumuman</li><li>A8. Pengaturan Global</li><li>A9. Audit Log</li><li>A10. Daftar tugas Superadmin</li></ol></li>
+    <li><a href="#bagian-b">Bagian B — Panduan Admin / Operator</a>
+      <ol><li>B1. Masuk dan memilih event</li><li>B2. Data Peserta</li><li>B3. Bank Soal</li><li>B4. Paket Soal</li><li>B5. Sesi Kompetisi: peserta, babak, dan soal</li><li>B6. Hari-H: menjalankan lomba dari Panel Kontrol</li><li>B7. Monitor (Live Scoreboard)</li><li>B8. Hasil Perlombaan, Laporan, dan Sertifikat</li><li>B9. Masalah yang sering terjadi</li><li>B10. Daftar periksa operator</li></ol></li>
+    <li><a href="#bagian-c">Bagian C — Panduan Peserta</a>
+      <ol><li>C1. Sebelum lomba</li><li>C2. Masuk ke ruang lomba</li><li>C3. Menjawab soal</li><li>C4. Melihat hasil</li><li>C5. Keadaan khusus</li><li>C6. Aturan dan tips</li><li>C7. Jika ada masalah</li></ol></li>
+    <li><a href="#lampiran">Lampiran</a>
+      <ol><li>L1. Rumus skor dan contoh</li><li>L2. Mode babak</li><li>L3. Aturan peringkat dan seri</li><li>L4. Pertanyaan yang sering diajukan</li><li>L5. Istilah</li></ol></li>
+  </ol>
+</section>
+
+<!-- ================= PENGANTAR ================= -->
+<section id="pengantar" class="pb">
+  <h1>Pengantar</h1>
+  <h2>Tentang aplikasi</h2>
+  <p><b>Lomba Rangking 1</b> adalah aplikasi untuk menyelenggarakan lomba cerdas cermat yang menentukan juara dari <b>kecepatan dan ketepatan</b> menjawab. Aplikasi ini dikembangkan oleh Dodi Sujatmiko sebagai produk UPT SMPN 1 Baradatu untuk mendukung lomba yang diselenggarakan oleh PGRI Kabupaten Way Kanan.</p>
+  <p>Selama lomba ada tiga “layar” yang bekerja bersamaan:</p>
+  <table>
+    <tr><th style="width:32%">Layar</th><th>Dipakai oleh</th><th>Fungsi</th></tr>
+    <tr><td><b>HP peserta</b></td><td>Peserta</td><td>Masuk dengan kode dan PIN, membaca soal, mengirim jawaban.</td></tr>
+    <tr><td><b>Panel kontrol</b></td><td>Operator (laptop)</td><td>Memulai babak, menayangkan soal, menutup soal, membuka jawaban, mengumumkan pemenang.</td></tr>
+    <tr><td><b>Monitor</b></td><td>Penonton (TV/proyektor)</td><td>Menampilkan soal, hitung mundur, klasemen, dan podium juara.</td></tr>
+  </table>
+  <h2>Peran dan hak akses</h2>
+  <table>
+    <tr><th>Peran</th><th>Bisa melakukan</th><th>Tidak bisa</th></tr>
+    <tr><td><b>Superadmin</b></td><td>Semuanya: membuat event, akun Admin, hak akses, master data, pengaturan global, penilaian, audit log.</td><td>—</td></tr>
+    <tr><td><b>Admin</b></td><td>Pada <u>event yang ditugaskan</u>: mengelola peserta, soal, menyiapkan dan menjalankan lomba, melihat hasil dan laporan — sesuai izin yang diberikan Superadmin.</td><td>Melihat event lain, mengubah role, mengubah pengaturan global/penilaian, melihat audit log.</td></tr>
+    <tr><td><b>Peserta</b></td><td>Masuk dengan kode + PIN, menjawab soal pada sesi yang diikutinya, melihat hasil setelah dibuka.</td><td>Melihat kunci jawaban, soal berikutnya, mengubah jawaban, melihat data peserta lain.</td></tr>
+  </table>
+  <h2>Alamat penting</h2>
+  <p>Ganti <code>situs-anda</code> dengan alamat situs yang dipakai (contoh: <code>lomba-rangking1.vercel.app</code>).</p>
+  <table>
+    <tr><th style="width:36%">Alamat</th><th>Untuk apa</th></tr>
+    <tr><td><code>situs-anda/</code></td><td>Beranda publik: jadwal, hasil, panduan.</td></tr>
+    <tr><td><code>situs-anda/login</code></td><td>Masuk Superadmin dan Admin.</td></tr>
+    <tr><td><code>situs-anda/peserta</code></td><td>Masuk peserta (dibuka dari HP).</td></tr>
+    <tr><td><code>situs-anda/live/KODE</code></td><td>Monitor satu sesi. <code>KODE</code> terdiri dari 6 karakter dan tertera di halaman sesi.</td></tr>
+    <tr><td><code>situs-anda/hasil/KODE</code></td><td>Hasil resmi satu sesi (tampil setelah hasil dipublikasikan).</td></tr>
+  </table>
+  <h2>Cara skor dihitung</h2>
+  <div class="box"><b class="t">Rumus</b>Jawaban <b>benar</b>: <code>skor = 100 + 50 × (sisa waktu ÷ total waktu)</code><br>Jawaban <b>salah</b> atau <b>tidak menjawab</b>: <code>0 poin</code></div>
+  <p>Contoh dengan waktu 20 detik: benar pada detik ke-2 = <b>145</b> poin, detik ke-10 = <b>125</b> poin, detik ke-18 = <b>105</b> poin. Semakin cepat menjawab benar, semakin besar poinnya. Skor dihitung oleh server dari jam server, sehingga tidak dapat diubah dari HP. Nilai 100, 50, durasi, dan pembulatan dapat diatur Superadmin (lihat A7 dan Lampiran L1).</p>
+  <h2>Alur satu lomba dari awal sampai akhir</h2>
+  <ol class="steps">
+    <li><b>Superadmin</b> membuat event, akun Admin, dan memberi hak akses.</li>
+    <li><b>Admin</b> mengimpor peserta, membagikan kartu kode + PIN, dan menyiapkan bank soal.</li>
+    <li><b>Admin</b> membuat sesi per jenjang, mengisi peserta, babak, dan soal.</li>
+    <li><b>Operator</b> membuka sesi; peserta masuk lewat HP; monitor dinyalakan.</li>
+    <li><b>Operator</b> menjalankan soal demi soal dari Panel Kontrol.</li>
+    <li><b>Operator</b> mengakhiri babak, memutus seri bila perlu, lalu mengumumkan pemenang.</li>
+    <li><b>Admin</b> mengunduh hasil, mencetak sertifikat, dan mempublikasikan hasil.</li>
+  </ol>
+</section>
+
+<!-- ================= BAGIAN A ================= -->
+<section id="bagian-a" class="part a">
+  <div class="k">Bagian A</div><h1>Panduan Superadmin</h1>
+  <p>Mengatur event, akun Admin, hak akses, penilaian, dan memantau seluruh aktivitas aplikasi.</p>
+</section>
+
+<section>
+  <h2>A1. Masuk dan mengenal tampilan</h2>
+  <p>Superadmin pertama dibuat sekali oleh pemasang aplikasi (panduan pemasangan ada di berkas <code>docs/DEPLOYMENT.md</code>). Setelah itu semua pengelolaan dilakukan dari dalam aplikasi.</p>
+  <ol class="steps">
+    <li>Buka <code>situs-anda/login</code>.</li>
+    <li>Isi <b>Email</b> dan <b>Kata sandi</b>, klik <b>Masuk</b>.</li>
+    <li>Anda tiba di <b>Dashboard</b>.</li>
+  </ol>
+  <figure><img src="img/sa-01-login.jpg" alt=""><figcaption>Halaman masuk Superadmin dan Admin.</figcaption></figure>
+  <div class="box warn"><b class="t">Jika muncul “Akun belum aktif”</b>Akun sudah terdaftar tetapi belum diaktifkan. Hubungi pemasang aplikasi atau Superadmin lain.</div>
+  <p>Di sisi kiri ada menu. Grup <b>Superadmin</b> (judul oranye) hanya tampil untuk Superadmin: Manajemen Admin, Hak Akses, Audit Log, dan Pengaturan Global. Pilihan <b>Event</b> di bagian atas menentukan event yang sedang dikelola oleh menu Data Peserta, Bank Soal, Sesi, dan seterusnya.</p>
+
+  <h2>A2. Dashboard</h2>
+  <p>Menampilkan ringkasan seluruh event: jumlah event, peserta, soal, kompetisi aktif, kecamatan, jenjang, dan kompetisi selesai; grafik peserta per kecamatan dan per jenjang; hasil kompetisi terakhir (juara 1, poin tertinggi, rata-rata); dan <b>aktivitas terakhir</b>.</p>
+  <figure><img src="img/sa-02-dashboard.jpg" alt=""><figcaption>Dashboard Superadmin.</figcaption></figure>
+
+  <h2>A3. Event Perlombaan</h2>
+  <p>Event adalah wadah satu penyelenggaraan lomba. Setiap event punya peserta, bank soal, sesi, dan pengaturan penilaian sendiri.</p>
+  <figure><img src="img/sa-03-event.jpg" alt=""><figcaption>Daftar event. Tombol <b>Kelola event ini</b> memilih event aktif.</figcaption></figure>
+  <h3>Membuat event</h3>
+  <ol class="steps">
+    <li>Menu <b>Event Perlombaan</b> → <b>Event baru</b>.</li>
+    <li>Isi <b>Nama event</b>, deskripsi, <b>Penyelenggara</b> (mis. PGRI Kabupaten Way Kanan), lokasi, tanggal, dan <b>Status</b>.</li>
+    <li><b>Kuota peserta per kecamatan / jenjang</b> (bawaan 3) dipakai sebagai acuan kelengkapan pendaftaran di halaman Data Peserta.</li>
+    <li>Aktifkan <b>Tampilkan di halaman publik</b> agar jadwal dan hasil muncul di beranda.</li>
+    <li>Unggah <b>Logo penyelenggara</b> (PNG/JPG/WebP, maksimal 2 MB). Logo ini tampil di monitor dan sertifikat.</li>
+    <li>Klik <b>Simpan</b>.</li>
+  </ol>
+  <figure><img src="img/sa-04-form-event.jpg" alt=""><figcaption>Formulir event baru.</figcaption></figure>
+  <div class="box warn"><b class="t">Hati-hati menghapus event</b>Menghapus event ikut menghapus permanen seluruh soal, sesi, jawaban, dan hasilnya. Aplikasi meminta konfirmasi sebelum menghapus.</div>
+
+  <h2>A4. Data Kecamatan dan Data Jenjang</h2>
+  <p>Kedua menu ini adalah data master yang berlaku untuk semua event. Hanya Superadmin yang dapat mengubahnya; Admin hanya melihat.</p>
+  <figure><img src="img/sa-05-kecamatan.jpg" alt=""><figcaption>Data Kecamatan (15 kecamatan awal; dapat ditambah).</figcaption></figure>
+  <ul>
+    <li><b>Tambah kecamatan/jenjang:</b> tombol <b>Tambah</b> → isi nama dan kode → Simpan. Kode jenjang wajib unik (SD, SMP, SMA).</li>
+    <li><b>Nonaktifkan</b> bila tidak dipakai lagi, daripada menghapus. Data yang masih dipakai peserta tidak dapat dihapus.</li>
+    <li>Kolom <b>Peserta (event aktif)</b> menunjukkan sebaran peserta pada event yang sedang dipilih.</li>
+  </ul>
+  <figure><img src="img/sa-06-jenjang.jpg" alt=""><figcaption>Data Jenjang: SD, SMP, dan SMA/SMK.</figcaption></figure>
+  <div class="box"><b class="t">Impor Excel oleh Superadmin</b>Jika berkas impor peserta memuat nama kecamatan yang belum ada, sistem otomatis menambahkannya bila diimpor oleh Superadmin. Admin akan mendapat pesan “Kecamatan tidak dikenal”.</div>
+
+  <h2>A5. Manajemen Admin</h2>
+  <p>Di sini Superadmin membuat dan mengatur akun Admin/operator.</p>
+  <figure><img src="img/sa-07-admin.jpg" alt=""><figcaption>Daftar akun.</figcaption></figure>
+  <h3>Membuat akun Admin</h3>
+  <ol class="steps">
+    <li>Menu <b>Manajemen Admin</b> → <b>Admin baru</b>.</li>
+    <li>Isi <b>Nama lengkap</b>, <b>Email</b>, dan <b>Kata sandi awal</b> (minimal 8 karakter). Sampaikan kata sandi kepada yang bersangkutan secara langsung.</li>
+    <li>Klik <b>Buat akun</b>. Akun langsung aktif dengan role <b>Admin</b>.</li>
+    <li>Lanjut ke menu <b>Hak Akses</b> untuk menugaskan event (A6). Tanpa penugasan, Admin tidak melihat event apa pun.</li>
+  </ol>
+  <figure><img src="img/sa-08-form-admin.jpg" alt=""><figcaption>Formulir Admin baru.</figcaption></figure>
+  <h3>Mengelola akun yang ada</h3>
+  <table>
+    <tr><th style="width:30%">Tindakan</th><th>Cara</th></tr>
+    <tr><td>Menonaktifkan akun</td><td>Matikan saklar <b>Aktif</b>. Akun nonaktif tidak dapat melihat data apa pun.</td></tr>
+    <tr><td>Mengubah role</td><td>Pilih <b>Admin</b> atau <b>Superadmin</b> pada kolom Role. Anda tidak dapat menurunkan atau menonaktifkan akun sendiri.</td></tr>
+    <tr><td>Reset kata sandi</td><td>Ikon kunci → isi kata sandi baru (minimal 8 karakter).</td></tr>
+    <tr><td>Menghapus akun</td><td>Ikon tempat sampah. Bila gagal, nonaktifkan saja.</td></tr>
+  </table>
+
+  <h2>A6. Hak Akses</h2>
+  <p>Menentukan event mana yang boleh dikelola setiap Admin dan izin per modul. Admin tidak dapat melihat atau mengubah event di luar penugasan ini.</p>
+  <figure><img src="img/sa-09-hak-akses.jpg" alt=""><figcaption>Hak Akses: pilih Admin di kiri, atur event dan izin di kanan.</figcaption></figure>
+  <ol class="steps">
+    <li>Pilih nama Admin di panel kiri.</li>
+    <li>Aktifkan saklar <b>Ditugaskan</b> pada event yang dimaksud.</li>
+    <li>Centang izin yang diberikan:</li>
+  </ol>
+  <table>
+    <tr><th style="width:22%">Izin</th><th>Artinya</th></tr>
+    <tr><td><b>Peserta</b></td><td>Menambah, mengubah, mengimpor peserta; verifikasi; reset PIN.</td></tr>
+    <tr><td><b>Soal</b></td><td>Mengelola bank soal dan paket soal.</td></tr>
+    <tr><td><b>Kontrol</b></td><td>Membuat sesi, mengatur babak, dan menjalankan pertandingan (mulai, jeda, tutup, umumkan).</td></tr>
+    <tr><td><b>Laporan</b></td><td>Melihat hasil, mengunduh laporan, mencetak sertifikat.</td></tr>
+  </table>
+  <div class="box ok"><b class="t">Contoh pembagian tugas</b>Operator layar: Kontrol + Laporan. Panitia pendaftaran: Peserta saja. Tim soal: Soal saja.</div>
+
+  <h2>A7. Pengaturan event: penilaian dan pengumuman</h2>
+  <p>Menu <b>Pengaturan</b> (untuk event yang dipilih) berisi dua hal.</p>
+  <figure class="tall"><img src="img/sa-13-pengaturan-event.jpg" alt=""><figcaption>Pengaturan event: penilaian cepat &amp; tepat, dan pengumuman.</figcaption></figure>
+  <h3>Penilaian cepat &amp; tepat (hanya Superadmin yang dapat mengubah)</h3>
+  <table>
+    <tr><th style="width:34%">Isian</th><th>Penjelasan</th></tr>
+    <tr><td>Skor dasar jawaban benar</td><td>Bawaan 100.</td></tr>
+    <tr><td>Bonus maksimal kecepatan</td><td>Bawaan 50. Diberikan proporsional terhadap sisa waktu.</td></tr>
+    <tr><td>Penalti jawaban salah</td><td>Bawaan 0. Isi angka positif bila jawaban salah harus mengurangi poin.</td></tr>
+    <tr><td>Durasi menjawab</td><td>Bawaan 20 detik (3–600). Dapat ditimpa per babak dan per soal oleh operator.</td></tr>
+    <tr><td>Hitung mundur sebelum soal</td><td>Bawaan 3 detik.</td></tr>
+    <tr><td>Pembulatan &amp; desimal</td><td>Terdekat/ke bawah/ke atas, bawaan 2 desimal.</td></tr>
+    <tr><td>Baris leaderboard di monitor</td><td>Jumlah peserta yang ditampilkan di layar klasemen (bawaan 10).</td></tr>
+  </table>
+  <p>Kotak <b>Pratinjau</b> di bawah isian langsung menunjukkan skor contoh. Nilai ini menjadi <u>nilai awal setiap babak baru</u>; babak yang sudah dibuat tidak berubah.</p>
+  <h3>Pengumuman</h3>
+  <p>Tombol <b>Baru</b> membuat pengumuman (informasi, jadwal, atau pemenang). Pengumuman yang <b>dipublikasikan</b> tampil di beranda bila event bersifat publik.</p>
+
+  <h2>A8. Pengaturan Global</h2>
+  <p>Berlaku untuk seluruh aplikasi.</p>
+  <figure class="tall"><img src="img/sa-12-global.jpg" alt=""><figcaption>Pengaturan Global: identitas aplikasi dan penilaian bawaan event baru.</figcaption></figure>
+  <table>
+    <tr><th style="width:30%">Isian</th><th>Tampil di</th></tr>
+    <tr><td>Nama aplikasi, tagline, deskripsi</td><td>Beranda.</td></tr>
+    <tr><td><b>Penyelenggara lomba</b></td><td>Beranda dan bagian “Penyelenggara”. (Penyelenggara tiap event diatur di menu Event.)</td></tr>
+    <tr><td><b>Pemilik produk</b></td><td>Beranda dan footer: “Produk UPT SMPN 1 Baradatu”.</td></tr>
+    <tr><td>Pengembang</td><td>Beranda dan footer: “Dikembangkan oleh Dodi Sujatmiko”.</td></tr>
+    <tr><td>Penilaian default event baru</td><td>Disalin ke setiap event yang dibuat setelahnya.</td></tr>
+  </table>
+  <p>Klik <b>Simpan identitas</b> atau <b>Simpan default penilaian</b> pada kartu masing-masing.</p>
+
+  <h2>A9. Audit Log</h2>
+  <p>Mencatat siapa melakukan apa dan kapan: perubahan data, tindakan operator (buka sesi, tayang soal, batalkan soal, eliminasi, umumkan pemenang), impor, dan reset PIN. Catatan tidak dapat diubah atau dihapus dari aplikasi.</p>
+  <figure><img src="img/sa-10-audit.jpg" alt=""><figcaption>Audit Log dengan penyaring event dan jenis tindakan.</figcaption></figure>
+  <ul>
+    <li>Gunakan penyaring <b>Semua event</b> dan <b>Semua tindakan</b> untuk menyempitkan daftar.</li>
+    <li>Klik satu baris untuk melihat <b>rincian</b> (nilai lama dan baru, alasan eliminasi, dan lain-lain).</li>
+    <li>Tindakan berisiko (eliminasi, pembatalan soal, pengumuman pemenang, reset PIN, hapus) ditandai oranye.</li>
+  </ul>
+  <figure><img src="img/sa-11-audit-detail.jpg" alt=""><figcaption>Rincian satu catatan audit.</figcaption></figure>
+
+  <h2>A10. Daftar tugas Superadmin</h2>
+  <h3>Sebelum lomba</h3>
+  <ul class="checklist">
+    <li>Buat event dan isi logo penyelenggara.</li>
+    <li>Periksa Data Kecamatan dan Data Jenjang.</li>
+    <li>Buat akun Admin dan atur Hak Akses.</li>
+    <li>Periksa penilaian di Pengaturan (100 + 50, durasi).</li>
+    <li>Periksa identitas di Pengaturan Global (penyelenggara, pemilik produk).</li>
+    <li>Ikut gladi resik dengan beberapa HP sungguhan.</li>
+  </ul>
+  <h3>Hari-H dan sesudahnya</h3>
+  <ul class="checklist">
+    <li>Pantau <b>Audit Log</b> untuk memastikan keputusan operator tercatat.</li>
+    <li>Setelah lomba, pastikan hasil dipublikasikan dan hasil diekspor sebagai arsip.</li>
+    <li>Nonaktifkan akun Admin yang tidak dipakai lagi.</li>
+  </ul>
+  <div class="box warn"><b class="t">Keamanan</b>Gunakan kata sandi yang kuat dan berbeda untuk setiap akun. Jangan pernah membagikan kunci rahasia (<i>service role / secret key</i>) Supabase kepada siapa pun dan jangan menaruhnya di aplikasi.</div>
+</section>
+
+<!-- ================= BAGIAN B ================= -->
+<section id="bagian-b" class="part b">
+  <div class="k">Bagian B</div><h1>Panduan Admin / Operator</h1>
+  <p>Menyiapkan peserta, soal, dan sesi; menjalankan lomba dari panel kontrol; membuat laporan dan sertifikat.</p>
+</section>
+
+<section>
+  <h2>B1. Masuk dan memilih event</h2>
+  <ol class="steps">
+    <li>Buka <code>situs-anda/login</code> dan masuk dengan email dan kata sandi dari Superadmin.</li>
+    <li>Di bagian atas, pilih <b>Event</b> yang akan dikelola. Daftar hanya berisi event yang ditugaskan kepada Anda.</li>
+    <li>Menu yang bisa dipakai bergantung pada izin Anda (Peserta, Soal, Kontrol, Laporan). Bila tombol tidak muncul atau muncul pesan “tidak memiliki izin”, minta Superadmin menambah izin.</li>
+  </ol>
+  <figure><img src="img/ad-21-dashboard.jpg" alt=""><figcaption>Dashboard Admin (hanya data event yang ditugaskan).</figcaption></figure>
+
+  <h2>B2. Data Peserta</h2>
+  <p>Setiap peserta mendapat <b>kode peserta</b> (mis. <code>R7K2MQ</code>) dan <b>PIN</b> 6 digit untuk masuk dari HP. PIN disimpan terenkripsi sehingga tidak bisa dilihat lagi setelah dibuat — hanya bisa direset.</p>
+  <figure><img src="img/ad-01-peserta.jpg" alt=""><figcaption>Data Peserta: ringkasan kuota per jenjang, penyaring, dan daftar.</figcaption></figure>
+  <h3>Mengimpor dari Excel (disarankan)</h3>
+  <ol class="steps">
+    <li>Klik <b>Template</b> untuk mengunduh berkas contoh.</li>
+    <li>Isi kolom: <b>No Peserta</b>, <b>Nama Lengkap</b>, <b>Asal Sekolah</b>, <b>Jenjang</b> (SD/SMP/SMA), <b>Kecamatan</b> (sesuai Data Kecamatan), dan <b>PIN</b> (boleh dikosongkan).</li>
+    <li>Klik <b>Import Excel</b> dan pilih berkas <code>.xlsx</code> (maksimal 5 MB).</li>
+    <li>Jendela <b>Hasil import</b> menampilkan jumlah berhasil/gagal beserta alasan per baris. Baris yang gagal tidak membatalkan baris lain; perbaiki lalu impor ulang — peserta yang sudah ada diperbarui, tidak digandakan.</li>
+    <li><b>Unduh kode &amp; PIN</b> atau <b>Cetak kartu</b> sekarang. PIN baru hanya tampil sekali.</li>
+  </ol>
+  <figure><img src="img/ad-03-hasil-import.jpg" alt=""><figcaption>Hasil import: baris dengan kecamatan salah dilaporkan, baris lain berhasil.</figcaption></figure>
+  <h3>Menambah satu peserta</h3>
+  <p>Klik <b>Tambah peserta</b>, isi nomor, nama, sekolah, jenjang, kecamatan, status, dan foto (opsional). Kosongkan Kode dan PIN agar dibuat otomatis.</p>
+  <figure><img src="img/ad-02-form-peserta.jpg" alt=""><figcaption>Formulir peserta.</figcaption></figure>
+  <h3>Verifikasi, reset PIN, dan cetak kartu</h3>
+  <ul>
+    <li><b>Verifikasi:</b> hanya peserta berstatus <b>Terverifikasi</b> yang dapat dimasukkan ke sesi. Centang peserta lalu klik <b>Verifikasi</b>. Peserta hasil impor otomatis terverifikasi.</li>
+    <li><b>Reset PIN:</b> ikon kunci pada satu peserta, atau centang beberapa peserta lalu <b>Reset PIN</b>. PIN lama langsung mati dan login lama peserta keluar.</li>
+    <li><b>Cetak kartu:</b> pada jendela <b>Kode &amp; PIN peserta</b> klik <b>Cetak kartu</b> (tiga kartu per baris) atau <b>Unduh Excel</b>.</li>
+    <li><b>Export:</b> tombol <b>Export</b> mengunduh daftar peserta sesuai penyaring.</li>
+  </ul>
+  <figure><img src="img/ad-04-kode-pin.jpg" alt=""><figcaption>Kode &amp; PIN ditampilkan sekali. Simpan atau cetak sebelum menutup.</figcaption></figure>
+  <div class="box warn"><b class="t">Kartu peserta bersifat rahasia</b>Bagikan kartu langsung kepada masing-masing peserta. Satu akun hanya dapat dipakai di satu HP pada satu waktu; login baru mengeluarkan login lama.</div>
+  <div class="box"><b class="t">Peserta yang sudah menjawab</b>Peserta yang sudah memiliki riwayat jawaban tidak dapat dihapus. Ubah <b>status keikutsertaan</b> menjadi Mundur atau Diskualifikasi.</div>
+
+  <h2>B3. Bank Soal</h2>
+  <p>Kunci jawaban tersimpan di server dan tidak pernah dikirim ke HP atau monitor selama soal aktif.</p>
+  <figure><img src="img/ad-05-bank-soal.jpg" alt=""><figcaption>Bank Soal dengan penyaring tipe, kategori, dan jenjang.</figcaption></figure>
+  <h3>Tiga tipe soal</h3>
+  <table>
+    <tr><th style="width:24%">Tipe</th><th>Keterangan</th></tr>
+    <tr><td><b>Pilihan ganda</b></td><td>2–6 opsi, tepat satu kunci (klik huruf opsi untuk menandai kunci).</td></tr>
+    <tr><td><b>Benar / Salah</b></td><td>Dua opsi tetap; pilih mana yang benar.</td></tr>
+    <tr><td><b>Jawaban singkat</b></td><td>Peserta mengetik. Daftarkan semua variasi jawaban yang diterima. Pengaturan <b>Abaikan spasi</b> (aktif) dan <b>Peka huruf besar/kecil</b> (mati) dinilai oleh server.</td></tr>
+  </table>
+  <h3>Membuat soal</h3>
+  <ol class="steps">
+    <li>Klik <b>Soal baru</b>, pilih tipe, jenjang, dan tingkat kesulitan.</li>
+    <li>Tulis pertanyaan; unggah gambar bila perlu.</li>
+    <li>Isi opsi dan tandai kunci. Pilih kategori atau buat kategori baru.</li>
+    <li>Isi <b>Pembahasan</b> (ditampilkan di monitor dan HP setelah jawaban dibuka).</li>
+    <li>Klik <b>Simpan soal</b>.</li>
+  </ol>
+  <figure><img src="img/ad-06-form-soal.jpg" alt=""><figcaption>Formulir soal pilihan ganda.</figcaption></figure>
+  <h3>Impor dan ekspor Excel</h3>
+  <p>Unduh <b>Template</b>, isi kolom <b>Tipe</b> (<code>PG</code>, <code>BS</code>, <code>ISIAN</code>), <b>Soal</b>, <b>Opsi A–E</b>, <b>Kunci</b>, Kategori, Jenjang, Kesulitan, Pembahasan. Kunci PG berupa huruf (<code>A</code>); BS berupa <code>Benar</code>/<code>Salah</code>; ISIAN berupa jawaban dipisah tanda <code>|</code> (contoh <code>56 | lima puluh enam</code>).</p>
+  <div class="box"><b class="t">Soal yang sudah pernah tayang</b>Kunci dan opsi soal yang sudah tayang dikunci agar skor yang telah dihitung tidak berubah. Teks soal dan pembahasan masih dapat diperbaiki.</div>
+
+  <h2>B4. Paket Soal</h2>
+  <p>Paket mengelompokkan soal dari bank soal agar mudah dimasukkan ke babak.</p>
+  <figure><img src="img/ad-07-paket.jpg" alt=""><figcaption>Daftar paket soal.</figcaption></figure>
+  <ul>
+    <li><b>Paket baru</b> → beri nama, pilih jenjang, atur <b>Acak urutan soal</b> dan <b>Acak pilihan jawaban</b>.</li>
+    <li><b>Pilih soal</b> → centang soal secara manual atau gunakan <b>Tambah acak</b> untuk memilih sejumlah soal secara acak.</li>
+  </ul>
+
+  <h2>B5. Sesi Kompetisi: peserta, babak, dan soal</h2>
+  <p>Satu <b>sesi</b> adalah satu pertandingan untuk satu jenjang (mis. “Final SMP”). Sesi terdiri dari beberapa <b>babak</b>, dan setiap babak berisi <b>soal</b>.</p>
+  <figure><img src="img/ad-08-sesi.jpg" alt=""><figcaption>Daftar sesi. <b>Atur</b> untuk menyiapkan, <b>Kontrol</b> untuk menjalankan.</figcaption></figure>
+  <ol class="steps">
+    <li>Menu <b>Sesi Kompetisi</b> → <b>Sesi baru</b>; isi nama, jenjang, dan jadwal (opsional). Sistem membuat <b>kode monitor</b> 6 karakter.</li>
+    <li>Klik <b>Atur</b>. Tab <b>Peserta</b>: klik <b>Tambahkan semua</b> (hanya peserta terverifikasi pada jenjang yang sama yang muncul).</li>
+    <li>Tab <b>Babak &amp; soal</b>: tambahkan babak, lalu isi dengan soal.</li>
+  </ol>
+  <figure><img src="img/ad-11-anggota-sesi.jpg" alt=""><figcaption>Tab Peserta: anggota sesi dan peserta terverifikasi yang belum masuk.</figcaption></figure>
+  <h3>Mode babak</h3>
+  <table>
+    <tr><th style="width:22%">Mode</th><th>Kapan dipakai</th></tr>
+    <tr><td><b>Normal</b></td><td>Penyisihan. Semua peserta menjawab semua soal; yang salah tetap lanjut.</td></tr>
+    <tr><td><b>Kecepatan</b></td><td>Seperti Normal, tetapi peringkat mendahulukan waktu menjawab benar yang paling singkat.</td></tr>
+    <tr><td><b>Eliminasi</b></td><td>Peserta gugur menurut aturan: setelah <i>N</i> kesalahan, di bawah ambang skor, atau keputusan operator. Yang gugur tidak dapat menjawab soal berikutnya di babak itu.</td></tr>
+    <tr><td><b>Final</b></td><td>Menentukan juara 1–3. Finalis dipilih dari peringkat teratas (Top-N) atau manual. Skor dapat di-reset ke 0.</td></tr>
+  </table>
+  <figure><img src="img/ad-10-form-babak.jpg" alt=""><figcaption>Formulir babak Eliminasi (aturan eliminasi dan penilaian per babak).</figcaption></figure>
+  <h3>Mengisi soal dan mengatur durasi per soal</h3>
+  <figure><img src="img/ad-09-atur-sesi.jpg" alt=""><figcaption>Babak berisi soal. Kotak “dtk” di kanan mengatur durasi tiap soal; angka oranye = durasi khusus.</figcaption></figure>
+  <ul>
+    <li><b>Tambah soal / paket:</b> muat dari paket atau centang soal; <b>Acak urutan soal</b> opsional.</li>
+    <li><b>Durasi per soal:</b> ubah angka pada kotak “dtk” (3–600 detik) lalu tekan Enter. <b>Samakan durasi semua soal</b> mengisi semua soal yang belum tayang dengan satu angka. Setelah soal tayang durasinya terkunci.</li>
+    <li><b>Roster:</b> memilih sendiri peserta yang boleh ikut babak itu (keputusan tercatat di audit log; sertakan alasan).</li>
+    <li><b>Ubah / hapus babak</b> hanya bisa sebelum babak dimulai.</li>
+  </ul>
+  <div class="box ok"><b class="t">Contoh susunan lomba</b>Babak 1 Normal (semua peserta, 20 soal) → Babak 2 Eliminasi (yang lolos, gugur setelah 1 kesalahan) → Babak 3 Final (Top-3, reset skor, 5 soal). Bila tiga besar masih seri, siapkan 2–3 soal cadangan untuk soal tambahan.</div>
+  <p>Setelah semuanya siap, klik <b>Buka sesi untuk peserta</b>. Sesi harus punya minimal satu peserta dan satu babak.</p>
+
+  <h2>B6. Hari-H: menjalankan lomba dari Panel Kontrol</h2>
+  <p>Buka dari <b>Sesi Kompetisi → Kontrol</b>. Tombol yang tampil selalu menyesuaikan keadaan lomba, sehingga operator tidak bisa menjalankan langkah yang salah.</p>
+  <figure><img src="img/ad-14-kontrol-dibuka.jpg" alt=""><figcaption>Panel Kontrol setelah sesi dibuka: siap memulai babak.</figcaption></figure>
+  <table>
+    <tr><th style="width:30%">Bagian layar</th><th>Fungsi</th></tr>
+    <tr><td>Kotak biru gelap</td><td>Status lomba, hitung mundur soal, jumlah peserta aktif, <b>online</b>, <b>sudah menjawab</b>, dan tereliminasi.</td></tr>
+    <tr><td>Tombol aksi</td><td>Langkah berikutnya yang boleh dilakukan.</td></tr>
+    <tr><td>Babak &amp; soal</td><td>Kotak nomor soal berwarna: abu = menunggu, biru = berjalan, kuning = ditutup, hijau = jawaban dibuka, merah = dibatalkan.</td></tr>
+    <tr><td>Klasemen</td><td>Peringkat langsung. Ikon di kanan untuk eliminasi/mengembalikan peserta.</td></tr>
+    <tr><td>Lencana “Realtime / Polling”</td><td>Sambungan data. <i>Polling</i> tetap aman (selisih ≤ 1,5 detik).</td></tr>
+  </table>
+  <h3>Urutan kerja untuk setiap soal</h3>
+  <ol class="steps">
+    <li><b>Mulai Babak</b> (sekali di awal babak).</li>
+    <li><b>Tayangkan soal pertama</b> / <b>Soal berikutnya</b>. Monitor dan HP menampilkan hitung mundur 3-2-1, lalu soal tampil serentak.</li>
+    <li>Peserta menjawab. Pantau <b>Sudah menjawab</b> di panel.</li>
+    <li><b>Tutup soal</b> (otomatis tertutup saat waktu habis; tombol ini menutup lebih awal).</li>
+    <li><b>Tampilkan jawaban benar</b>: monitor menampilkan kunci, jumlah pemilih tiap opsi, dan penjawab tercepat.</li>
+    <li>Opsional: <b>Tampilkan leaderboard</b> di monitor.</li>
+    <li>Ulangi dari langkah 2 sampai soal habis, lalu <b>Akhiri babak</b>.</li>
+  </ol>
+  <figure><img src="img/ad-15-kontrol-soal.jpg" alt=""><figcaption>Soal berjalan: hitung mundur, jumlah penjawab, dan tombol Tutup soal / Jeda / Batalkan soal.</figcaption></figure>
+  <figure><img src="img/ad-17-kontrol-hasil.jpg" alt=""><figcaption>Setelah jawaban dibuka: kotak soal menampilkan kunci dan statistik.</figcaption></figure>
+  <h3>Aksi lainnya</h3>
+  <table>
+    <tr><th style="width:24%">Aksi</th><th>Penjelasan</th></tr>
+    <tr><td><b>Jeda / Lanjutkan</b></td><td>Menghentikan soal yang berjalan. Soal disembunyikan dari HP dan monitor. Saat dilanjutkan, waktu menjawab <u>tidak berkurang</u> karena jeda.</td></tr>
+    <tr><td><b>Batalkan soal</b></td><td>Untuk soal bermasalah. Skor soal itu dihapus dari klasemen dan peserta yang gugur karenanya dikembalikan. Riwayat jawaban tetap tersimpan. Alasan dicatat.</td></tr>
+    <tr><td><b>Eliminasi / Kembalikan</b></td><td>Ikon di klasemen. Alasan wajib diisi dan tercatat di audit log.</td></tr>
+    <tr><td><b>Soal tambahan (seri)</b></td><td>Tersedia setelah babak selesai. Pilih peserta yang seri dan soal cadangan, lalu mulai babak soal tambahan. Poinnya hanya memutus seri, tidak mengubah total poin.</td></tr>
+    <tr><td><b>Umumkan pemenang</b></td><td>Mengakhiri sesi, memunculkan podium di monitor, dan mempublikasikan hasil. Ditolak bila tiga besar masih seri (kecuali memilih “Umumkan tanpa memutus seri”).</td></tr>
+  </table>
+  <figure><img src="img/ad-16-kontrol-jeda.jpg" alt=""><figcaption>Lomba dijeda. Tombol berubah menjadi <b>Lanjutkan</b>.</figcaption></figure>
+  <div class="box warn"><b class="t">Yang tidak bisa dilakukan</b>Jawaban peserta tidak dapat diubah atau dihapus. Soal yang sedang berjalan tidak dapat diganti layarnya. Babak yang sudah dimulai tidak dapat dihapus. Semua ini disengaja untuk menjaga keadilan.</div>
+
+  <h2>B7. Monitor (Live Scoreboard)</h2>
+  <p>Menu <b>Live Scoreboard</b> menampilkan tautan monitor setiap sesi dan <b>QR</b> halaman peserta yang bisa ditayangkan atau dicetak di pintu masuk.</p>
+  <figure><img src="img/ad-13-live-admin.jpg" alt=""><figcaption>Menu Live Scoreboard: tautan monitor dan QR masuk peserta.</figcaption></figure>
+  <ol class="steps">
+    <li>Pada laptop yang tersambung ke TV/proyektor, klik <b>Buka monitor</b>.</li>
+    <li>Tekan tombol <b>F</b> atau ikon di pojok kanan atas untuk layar penuh.</li>
+    <li>Monitor tidak memerlukan login dan tidak pernah menampilkan kunci jawaban selama soal aktif.</li>
+  </ol>
+  <p>Tujuh tampilan monitor muncul otomatis mengikuti tindakan operator:</p>
+  <div class="phones" style="flex-wrap:wrap">
+    <figure style="flex:0 0 82mm"><img style="width:82mm;border-radius:1mm" src="img/tv-1-menunggu.jpg" alt=""><figcaption>Layar tunggu</figcaption></figure>
+    <figure style="flex:0 0 82mm"><img style="width:82mm;border-radius:1mm" src="img/tv-2-hitung-mundur.jpg" alt=""><figcaption>Hitung mundur</figcaption></figure>
+    <figure style="flex:0 0 82mm"><img style="width:82mm;border-radius:1mm" src="img/tv-4-soal-jawaban.jpg" alt=""><figcaption>Soal berjalan</figcaption></figure>
+    <figure style="flex:0 0 82mm"><img style="width:82mm;border-radius:1mm" src="img/tv-5-memproses.jpg" alt=""><figcaption>Memproses jawaban</figcaption></figure>
+    <figure style="flex:0 0 82mm"><img style="width:82mm;border-radius:1mm" src="img/tv-6-hasil.jpg" alt=""><figcaption>Hasil soal</figcaption></figure>
+    <figure style="flex:0 0 82mm"><img style="width:82mm;border-radius:1mm" src="img/tv-7-klasemen.jpg" alt=""><figcaption>Klasemen</figcaption></figure>
+    <figure style="flex:0 0 82mm"><img style="width:82mm;border-radius:1mm" src="img/tv-8-podium.jpg" alt=""><figcaption>Podium juara</figcaption></figure>
+  </div>
+
+  <h2>B8. Hasil Perlombaan, Laporan, dan Sertifikat</h2>
+  <h3>Hasil Perlombaan</h3>
+  <p>Pilih <b>sesi</b> dan, bila perlu, <b>babak</b>, kecamatan, atau sekolah. Tiga kartu teratas menampilkan juara. Tabel memuat poin, benar, salah, kosong, rata-rata waktu, dan status (termasuk alasan eliminasi).</p>
+  <figure><img src="img/ad-18-hasil.jpg" alt=""><figcaption>Hasil Perlombaan.</figcaption></figure>
+  <ul>
+    <li><b>Excel</b>, <b>PDF</b>, dan <b>Cetak</b> memakai penyaring yang sedang aktif.</li>
+    <li><b>Publikasikan hasil</b> membuat hasil dapat dilihat publik di <code>situs-anda/hasil/KODE</code>. Tombol yang sama menyembunyikannya kembali. (Mengumumkan pemenang otomatis mempublikasikan.)</li>
+  </ul>
+  <h3>Laporan dan sertifikat</h3>
+  <figure><img src="img/ad-19-laporan.jpg" alt=""><figcaption>Menu Laporan.</figcaption></figure>
+  <table>
+    <tr><th style="width:36%">Laporan</th><th>Isi</th></tr>
+    <tr><td>Ranking semua peserta</td><td>Peringkat, poin, benar/salah/kosong, total dan rata-rata waktu, status (Excel, PDF).</td></tr>
+    <tr><td>Daftar juara 1, 2, 3</td><td>Tiga besar untuk berita acara.</td></tr>
+    <tr><td>Riwayat jawaban per soal</td><td>Jawaban tiap peserta untuk tiap soal, benar/salah, waktu respons, poin (Excel).</td></tr>
+    <tr><td>Rekap per kecamatan / sekolah</td><td>Jumlah peserta, total dan rata-rata poin, poin tertinggi (Excel).</td></tr>
+    <tr><td>Sertifikat</td><td><b>Piagam juara 1–3</b> (bingkai emas/perak/perunggu) dan <b>sertifikat semua peserta</b>, A4 lanskap PDF. Isi nama dan jabatan penandatangan sebelum mengunduh. Nama penyelenggara pada sertifikat diambil dari data event.</td></tr>
+  </table>
+
+  <h2>B9. Masalah yang sering terjadi</h2>
+  <table>
+    <tr><th style="width:34%">Gejala</th><th>Penyebab / tindakan</th></tr>
+    <tr><td>Peserta tidak muncul saat menambah ke sesi</td><td>Peserta belum <b>Terverifikasi</b>, jenjangnya berbeda dengan sesi, atau status keikutsertaannya Mundur/Diskualifikasi.</td></tr>
+    <tr><td>Tombol “Buka sesi” tidak berfungsi</td><td>Sesi belum punya peserta atau belum punya babak.</td></tr>
+    <tr><td>Soal tidak bisa ditayangkan</td><td>Babak belum <b>dimulai</b>, soal habis, atau soal sebelumnya belum ditutup.</td></tr>
+    <tr><td>Lencana “Polling” di panel kontrol</td><td>Aman. Sambungan realtime sedang tidak aktif; data tetap sinkron. Muat ulang halaman bila ingin mencoba tersambung lagi.</td></tr>
+    <tr><td>Peserta “Sesi login berakhir”</td><td>Minta peserta masuk lagi. Penyebab umum: login di HP lain, atau PIN direset.</td></tr>
+    <tr><td>Peserta terkunci</td><td>Salah PIN 5 kali mengunci akun 5 menit. Tunggu atau <b>Reset PIN</b>.</td></tr>
+    <tr><td>Monitor kosong atau macet</td><td>Muat ulang <code>/live/KODE</code>. Keadaan lomba dipulihkan dari server; tidak ada data yang hilang.</td></tr>
+    <tr><td>Muncul pesan “tidak memiliki hak akses”</td><td>Izin untuk modul itu belum diberikan Superadmin.</td></tr>
+  </table>
+
+  <h2>B10. Daftar periksa operator</h2>
+  <h3>H-7 sampai H-1</h3>
+  <ul class="checklist">
+    <li>Peserta diimpor dan <b>terverifikasi</b>; kuota per kecamatan terpenuhi.</li>
+    <li>Kartu kode + PIN sudah dicetak dan dibagikan.</li>
+    <li>Soal lengkap (termasuk soal cadangan untuk seri); durasi diatur.</li>
+    <li>Sesi, babak, dan soal sudah disiapkan; <b>gladi resik</b> dengan HP sungguhan sudah dilakukan.</li>
+  </ul>
+  <h3>Hari-H sebelum mulai</h3>
+  <ul class="checklist">
+    <li>Laptop operator, TV/proyektor, dan internet (cadangkan hotspot) siap.</li>
+    <li>Monitor dibuka dan layar penuh; QR masuk peserta ditampilkan.</li>
+    <li>Sesi <b>dibuka</b>; jumlah peserta <b>online</b> sesuai harapan.</li>
+  </ul>
+  <h3>Setelah lomba</h3>
+  <ul class="checklist">
+    <li>Pemenang diumumkan; hasil diekspor (Excel/PDF) sebagai arsip.</li>
+    <li>Sertifikat dicetak; hasil dipublikasikan bila diperlukan.</li>
+  </ul>
+</section>
+
+<!-- ================= BAGIAN C ================= -->
+<section id="bagian-c" class="part c">
+  <div class="k">Bagian C</div><h1>Panduan Peserta</h1>
+  <p>Cara masuk dan menjawab soal dari HP. Siapa cepat, siapa tepat, dialah juara!</p>
+</section>
+
+<section class="pe-big">
+  <h2>C1. Sebelum lomba</h2>
+  <ul>
+    <li>Siapkan <b>HP yang baterainya penuh</b> dan terhubung internet (Wi-Fi lokasi atau paket data).</li>
+    <li>Ambil <b>kartu peserta</b> dari panitia. Di kartu ada <b>Kode peserta</b> dan <b>PIN</b>. <u>Jangan beri tahu orang lain.</u></li>
+    <li>Pastikan layar HP tidak mati sendiri (atur waktu layar ke paling lama) dan nonaktifkan mode hemat daya.</li>
+    <li>Gunakan browser biasa (Chrome atau Safari). Tidak perlu memasang aplikasi.</li>
+  </ul>
+
+  <h2>C2. Masuk ke ruang lomba</h2>
+  <ol class="steps">
+    <li>Pindai <b>QR</b> yang ditampilkan panitia, atau buka <code>situs-anda/peserta</code>.</li>
+    <li>Ketik <b>Kode peserta</b> (huruf besar otomatis) dan <b>PIN</b>.</li>
+    <li>Tekan <b>Masuk</b>.</li>
+    <li>Jika muncul <b>“Anda sudah masuk”</b>, berarti berhasil. Tunggu panitia memulai. <u>Jangan menutup halaman ini.</u></li>
+  </ol>
+  <div class="phones big">
+    <figure><img src="img/pe-01-login.jpg" alt=""><figcaption>Halaman masuk</figcaption></figure>
+    <figure><img src="img/pe-02-menunggu.jpg" alt=""><figcaption>Berhasil masuk, menunggu</figcaption></figure>
+  </div>
+  <div class="box warn"><b class="t">Salah PIN?</b>Jika salah PIN 5 kali, akun terkunci 5 menit. Tenang, tunggu atau minta panitia mereset PIN. Jika Anda masuk di HP lain, HP yang lama otomatis keluar.</div>
+
+  <h2>C3. Menjawab soal</h2>
+  <ol class="steps">
+    <li><b>Hitung mundur 3-2-1</b> muncul di HP dan di layar besar. Bersiap.</li>
+    <li>Soal tampil serentak. Waktu berjalan di bagian atas (bilah hijau dan angka detik).</li>
+    <li>Baca soal, lalu <b>sentuh satu pilihan</b>. Pilihan yang Anda sentuh akan bertanda (garis biru).</li>
+    <li>Tekan tombol oranye besar <b>Kirim jawaban</b>.</li>
+    <li>Muncul <b>“Jawaban terkirim”</b>. Selesai — tunggu soal berikutnya.</li>
+  </ol>
+  <div class="phones">
+    <figure><img src="img/pe-03-hitung-mundur.jpg" alt=""><figcaption>Hitung mundur</figcaption></figure>
+    <figure><img src="img/pe-04-soal.jpg" alt=""><figcaption>Soal tampil</figcaption></figure>
+    <figure><img src="img/pe-05-pilih.jpg" alt=""><figcaption>Sentuh pilihan, lalu Kirim</figcaption></figure>
+    <figure><img src="img/pe-06-terkirim.jpg" alt=""><figcaption>Jawaban terkirim</figcaption></figure>
+  </div>
+  <div class="box"><b class="t">Soal jawaban singkat</b>Jika tidak ada pilihan, ketik jawaban pada kotak yang tersedia lalu tekan <b>Kirim jawaban</b>. Huruf besar/kecil tidak berpengaruh, tetapi tulislah dengan benar.</div>
+  <div class="box warn"><b class="t">Ingat!</b><ul style="margin:0"><li>Satu soal hanya <b>satu kali</b> menjawab. Jawaban <b>tidak bisa diubah</b> setelah dikirim.</li><li>Jawaban yang dikirim setelah waktu habis <b>tidak diterima</b>.</li><li>Waktu dihitung dari jam server, bukan jam HP.</li></ul></div>
+
+  <h2>C4. Melihat hasil</h2>
+  <p>Anda <u>belum</u> tahu benar atau salahnya jawaban Anda sampai operator menekan “Tampilkan jawaban benar”. Setelah itu di HP akan tampil:</p>
+  <ul>
+    <li><b>Benar! +… poin</b> (hijau) atau <b>Kurang tepat · 0 poin</b> (merah).</li>
+    <li>Jawaban yang benar, penjelasan (bila ada), serta <b>peringkat dan total poin</b> Anda.</li>
+  </ul>
+  <div class="phones big">
+    <figure><img src="img/pe-08-benar.jpg" alt=""><figcaption>Jawaban benar</figcaption></figure>
+    <figure><img src="img/pe-09-salah.jpg" alt=""><figcaption>Jawaban kurang tepat</figcaption></figure>
+    <figure><img src="img/pe-10-selesai.jpg" alt=""><figcaption>Lomba selesai: peringkat akhir</figcaption></figure>
+  </div>
+
+  <h2>C5. Keadaan khusus</h2>
+  <table>
+    <tr><th style="width:32%">Yang tampil di HP</th><th>Artinya</th></tr>
+    <tr><td><b>Lomba dijeda</b></td><td>Operator menjeda lomba. Tunggu; waktu menjawab Anda tidak berkurang.</td></tr>
+    <tr><td><b>Anda tereliminasi</b></td><td>Pada babak eliminasi Anda gugur. Anda masih bisa menonton, tetapi tidak dapat menjawab lagi di babak itu.</td></tr>
+    <tr><td><b>Soal dibatalkan oleh operator</b></td><td>Soal bermasalah dibatalkan dan poinnya tidak dihitung. Soal berikutnya akan menyusul.</td></tr>
+    <tr><td><b>Tombol jawaban tidak aktif</b> padahal soal tampil</td><td>Babak itu hanya untuk finalis atau peserta tertentu yang dipilih panitia. Anda hanya dapat menonton pada babak itu.</td></tr>
+    <tr><td><b>Lomba selesai</b></td><td>Peringkat akhir Anda tampil. Hasil lengkap dapat dilihat di layar besar atau di beranda setelah dipublikasikan.</td></tr>
+  </table>
+  <div class="phones big">
+    <figure><img src="img/pe-07-dijeda.jpg" alt=""><figcaption>Lomba dijeda</figcaption></figure>
+  </div>
+
+  <h2>C6. Aturan dan tips</h2>
+  <div class="box ok"><b class="t">Tips cepat dan tepat</b><ul style="margin:0"><li>Baca soal sampai selesai sebelum menyentuh pilihan — jawaban salah = 0 poin, secepat apa pun.</li><li>Cepat itu bagus <u>asal benar</u>. Bonus kecepatan hanya untuk jawaban yang benar.</li><li>Jaga ibu jari di dekat tombol <b>Kirim jawaban</b>, tetapi periksa pilihan Anda dulu.</li></ul></div>
+  <ul>
+    <li>Dilarang membagikan atau meminjam kode dan PIN.</li>
+    <li>Dilarang bekerja sama atau melihat jawaban teman. Panitia dapat mengeliminasi peserta yang melanggar; keputusan itu tercatat.</li>
+    <li>Jangan memuat ulang halaman terus-menerus. Jika perlu, muat ulang sekali — keadaan lomba dipulihkan otomatis.</li>
+  </ul>
+
+  <h2>C7. Jika ada masalah</h2>
+  <table>
+    <tr><th style="width:36%">Masalah</th><th>Yang dilakukan</th></tr>
+    <tr><td>“Kode peserta atau PIN salah”</td><td>Periksa kartu. Angka <b>0</b> dan huruf <b>O</b> berbeda. Kode memakai huruf besar.</td></tr>
+    <tr><td>Internet terputus saat mengirim</td><td>Tunggu jaringan kembali, lalu tekan <b>Kirim jawaban</b> lagi. Jawaban tidak akan tercatat dua kali.</td></tr>
+    <tr><td>“Sesi login berakhir”</td><td>Masuk lagi dengan kode dan PIN yang sama.</td></tr>
+    <tr><td>Layar tidak berubah</td><td>Tunggu beberapa detik; halaman memperbarui diri otomatis. Jika tetap, angkat tangan dan panggil panitia.</td></tr>
+    <tr><td>Lupa PIN</td><td>Minta panitia mereset PIN di meja registrasi.</td></tr>
+  </table>
+</section>
+
+<!-- ================= LAMPIRAN ================= -->
+<section id="lampiran" class="pb">
+  <h1>Lampiran</h1>
+  <h2>L1. Rumus skor dan contoh</h2>
+  <div class="box"><b class="t">Skor jawaban benar</b><code>skor = skor_dasar + bonus × (sisa_waktu ÷ total_waktu)</code> — dibulatkan sesuai pengaturan (bawaan 2 desimal).</div>
+  <table>
+    <tr><th>Menjawab pada detik ke-</th><th>Sisa waktu (durasi 20 dtk)</th><th>Skor benar (100 + 50, durasi 20 dtk)</th><th>Skor benar (durasi 45 dtk)</th></tr>
+    <tr><td>0</td><td>100%</td><td>150,00</td><td>150,00</td></tr>
+    <tr><td>2</td><td>90%</td><td>145,00</td><td>147,78</td></tr>
+    <tr><td>10</td><td>50%</td><td>125,00</td><td>138,89</td></tr>
+    <tr><td>15</td><td>25%</td><td>112,50</td><td>133,33</td></tr>
+    <tr><td>18</td><td>10%</td><td>105,00</td><td>130,00</td></tr>
+    <tr><td>Tepat di batas waktu</td><td>0%</td><td>100,00</td><td>100,00</td></tr>
+    <tr><td>Salah atau tidak menjawab</td><td>—</td><td>0</td><td>0</td></tr>
+  </table>
+  <p>Durasi bisa berbeda untuk tiap soal (lihat B5). Rumusnya selalu memakai durasi soal yang bersangkutan.</p>
+
+  <h2>L2. Mode babak</h2>
+  <table>
+    <tr><th>Mode</th><th>Perilaku</th></tr>
+    <tr><td>Normal</td><td>Semua menjawab; skor kecepatan + ketepatan.</td></tr>
+    <tr><td>Kecepatan</td><td>Sama dengan Normal; urutan peringkat mendahulukan waktu benar tercepat.</td></tr>
+    <tr><td>Eliminasi</td><td>Gugur menurut aturan (jumlah kesalahan / ambang skor / keputusan operator).</td></tr>
+    <tr><td>Final</td><td>Finalis dari Top-N atau manual; dapat reset skor.</td></tr>
+    <tr><td>Soal tambahan</td><td>Hanya untuk memutus seri; dibuat dari panel kontrol.</td></tr>
+  </table>
+
+  <h2>L3. Aturan peringkat dan seri</h2>
+  <p>Peringkat ditentukan oleh server, bukan oleh tampilan. Urutan pertimbangan:</p>
+  <ol>
+    <li>Total poin (lebih tinggi lebih baik).</li>
+    <li>Jumlah jawaban benar.</li>
+    <li>Total waktu respons jawaban benar (lebih singkat lebih baik).</li>
+    <li>Hasil soal tambahan (poin, lalu waktu).</li>
+  </ol>
+  <p>Pada babak bermode <b>Kecepatan</b>, butir 3 didahulukan sebelum butir 2. Pada babak Final, finalis selalu berada di atas non-finalis. Seri yang masih ada di tiga besar harus diputus dengan soal tambahan sebelum pemenang diumumkan.</p>
+
+  <h2>L4. Pertanyaan yang sering diajukan</h2>
+  <table>
+    <tr><th style="width:38%">Pertanyaan</th><th>Jawaban</th></tr>
+    <tr><td>Berapa peserta yang dapat mengikuti bersamaan?</td><td>Aplikasi dirancang dan diuji untuk 135 peserta menjawab dalam waktu berdekatan. Kinerja akhir bergantung pada jaringan lokasi dan paket layanan database; lakukan gladi resik.</td></tr>
+    <tr><td>Apakah peserta bisa curang dengan mengubah skor di HP?</td><td>Tidak. Skor dan waktu dihitung server; HP hanya mengirim pilihan jawaban.</td></tr>
+    <tr><td>Bagaimana bila internet peserta putus?</td><td>Halaman tersambung ulang otomatis dan mengambil keadaan terbaru. Jawaban yang dikirim ulang tidak tercatat ganda. Namun jawaban yang tiba setelah waktu habis ditolak.</td></tr>
+    <tr><td>Siapa saja yang bisa melihat kunci jawaban?</td><td>Admin yang berhak atas event itu (di Bank Soal). Peserta dan monitor tidak pernah menerimanya selama soal aktif.</td></tr>
+    <tr><td>Bisakah soal dipakai ulang di event lain?</td><td>Ya, lewat Export Excel dari satu event lalu Import Excel di event lain.</td></tr>
+    <tr><td>Di mana tercatat keputusan operator?</td><td>Di Audit Log (Superadmin), lengkap dengan pelaku, waktu, dan alasan.</td></tr>
+    <tr><td>Apa yang terjadi bila operator salah menutup soal?</td><td>Soal yang sudah ditutup tidak dapat dibuka kembali; operator dapat membatalkan soal (skor dihapus) lalu menayangkan soal pengganti.</td></tr>
+  </table>
+
+  <h2>L5. Istilah</h2>
+  <table>
+    <tr><th style="width:24%">Istilah</th><th>Arti</th></tr>
+    <tr><td>Event</td><td>Satu penyelenggaraan lomba (mis. Lomba Rangking 1 Tingkat Kabupaten).</td></tr>
+    <tr><td>Sesi</td><td>Satu pertandingan untuk satu jenjang, punya kode monitor.</td></tr>
+    <tr><td>Babak</td><td>Tahap dalam sesi: Normal, Kecepatan, Eliminasi, Final, atau Soal tambahan.</td></tr>
+    <tr><td>Roster</td><td>Daftar peserta yang boleh mengikuti suatu babak.</td></tr>
+    <tr><td>Verifikasi</td><td>Status registrasi yang menandakan peserta sah dan boleh masuk sesi.</td></tr>
+    <tr><td>PIN</td><td>Angka rahasia peserta untuk masuk, bersama kode peserta.</td></tr>
+    <tr><td>Realtime / Polling</td><td>Dua cara layar mendapat pembaruan. Realtime = langsung; Polling = memeriksa berkala (tetap akurat).</td></tr>
+    <tr><td>Audit log</td><td>Catatan permanen tindakan penting beserta pelakunya.</td></tr>
+  </table>
+  <div class="box" style="margin-top:8mm"><b class="t">Bantuan teknis</b>Produk UPT SMPN 1 Baradatu · Dikembangkan oleh Dodi Sujatmiko · Penyelenggara lomba: PGRI Kabupaten Way Kanan.</div>
+</section>
+</body>
+</html>

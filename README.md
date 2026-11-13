@@ -25,6 +25,7 @@ React 18 · Vite · TypeScript · Tailwind · Radix/shadcn · Framer Motion · R
 | [docs/ARSITEKTUR.md](docs/ARSITEKTUR.md) | Arsitektur, ERD, mesin lomba, keamanan, asumsi |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Setup Supabase, bootstrap Superadmin, deploy Netlify/Vercel, gladi resik |
 | [docs/PANDUAN_OPERATOR.md](docs/PANDUAN_OPERATOR.md) | Panduan operator hari-H |
+| [docs/panduan/Buku-Panduan-Lomba-Rangking-1.pdf](docs/panduan/Buku-Panduan-Lomba-Rangking-1.pdf) | Buku panduan bergambar untuk Superadmin, Admin/Operator, dan Peserta (sumber: `docs/panduan/buku-panduan.html`) |
 | [docs/PENGUJIAN.md](docs/PENGUJIAN.md) | Matriks pengujian & status kesiapan |
 
 ## Perintah

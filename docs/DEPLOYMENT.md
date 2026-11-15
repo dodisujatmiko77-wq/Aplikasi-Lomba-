@@ -19,11 +19,15 @@ Buka **SQL Editor** dan jalankan **berurutan**, satu berkas per eksekusi:
 | 3 | `supabase/migrations/0003_admin_functions.sql` | RPC admin: peserta, PIN, bank soal |
 | 4 | `supabase/migrations/0004_competition_engine.sql` | mesin lomba: skor, submit atomik, kontrol operator |
 | 5 | `supabase/migrations/0005_fix_new_user_trigger.sql` | perbaikan pembuatan user (aman diulang) |
-| 6 | `supabase/seed.sql` | 3 jenjang, 15 kecamatan, role, contoh event & 12 soal |
+| 6 | `supabase/migrations/0006_separate_organizer_product.sql` | pemisahan penyelenggara dan produk |
+| 7 | `supabase/migrations/0007_device_lock.sql` | **satu peserta = satu perangkat** + reset perangkat oleh admin |
+| 8 | `supabase/seed.sql` | 3 jenjang, 15 kecamatan, role, contoh event & 12 soal |
+
+> **Sudah terlanjur memakai 0001–0006?** Cukup jalankan `0007_device_lock.sql` (sekali) di SQL Editor Supabase, lalu pasang APK/web terbaru. Klien lama tanpa identitas perangkat akan ditolak ("Aplikasi perlu diperbarui").
 
 > **Jika membuat user Supabase gagal** ("Database error creating new user"): jalankan `0005_fix_new_user_trigger.sql`, lalu buat user lagi.
 
-> Berkas 0001–0004 **tidak idempoten**: jalankan sekali pada proyek kosong. Untuk mengulang dari nol, buat proyek baru atau reset database.
+> Berkas 0001–0004 dan 0007 **tidak idempoten**: jalankan sekali pada proyek kosong. Untuk mengulang dari nol, buat proyek baru atau reset database.
 
 ## 3. Bootstrap Superadmin pertama (aman, tanpa kredensial di SQL)
 1. **Authentication → Users → Add user → Create new user**: isi email & kata sandi kuat, centang *Auto Confirm User*.

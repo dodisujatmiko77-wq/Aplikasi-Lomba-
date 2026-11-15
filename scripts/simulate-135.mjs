@@ -42,7 +42,7 @@ await test(`impor ${N} peserta dan buka sesi`, async () => {
 
 section('Login serentak')
 await test(`${N} peserta login bersamaan (bcrypt + token)`, async () => {
-  const [res, ms] = await timed(() => Promise.all(P.map((p) => api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin }))))
+  const [res, ms] = await timed(() => Promise.all(P.map((p) => api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: 'sim-perangkat-' + p.code }))))
   assert(res.every((r) => r.ok), JSON.stringify(res.find((r) => !r.ok)))
   res.forEach((r, i) => (P[i].token = r.token))
   console.log(`      total ${ms} ms`)

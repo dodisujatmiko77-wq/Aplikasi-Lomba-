@@ -25,6 +25,7 @@ Prasyarat DB uji: `scripts/pg-local.sh start` (PostgreSQL 16 tanpa Docker). CI G
 | 19 | Export laporan | `ui-export`: Excel peserta/hasil/riwayat, PDF hasil, PDF sertifikat | ✔ |
 | 20 | Tampilan monitor | Screenshot 16:9 untuk ketujuh layar | ✔ |
 | 21 | Tampilan HP | Screenshot 390×780 (login → soal → terkirim → hasil → selesai) | ✔ |
+| 23 | Satu perangkat per peserta | `test:db` bagian 4: perangkat lain ditolak walau PIN benar, percobaan tercatat, logout tidak melepas kunci, reset perangkat (admin/superadmin) + audit, admin event lain ditolak, reset PIN melepas kunci | ✔ |
 | 22 | Simulasi 135 peserta | `test:load`: 135 login serentak, 6 soal × (135 jawaban + duplikat + 3× polling), 3× berturut-turut lulus | ✔ |
 
 ## Hasil simulasi 135 peserta (PostgreSQL lokal, pool 30 koneksi)

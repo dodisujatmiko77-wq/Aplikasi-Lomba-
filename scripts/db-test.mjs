@@ -11,6 +11,7 @@ import {
 const su = await resetDatabase()
 const api = makeApi(24)
 const { test, section, done } = makeRunner()
+const dv = (p, n = 'A') => `uji-perangkat-${p.code}-${n}`
 const one = async (text, params) => (await su.query(text, params)).rows[0]
 const val = async (text, params) => Object.values((await one(text, params)) ?? {})[0]
 
@@ -141,40 +142,85 @@ section('4. Login peserta')
 await test('PIN salah ditolak, 5 kali salah mengunci akun', async () => {
   const p = P[40]
   for (let i = 0; i < 4; i++) {
-    const r = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: '000000x' })
+    const r = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: '000000x', p_device: dv(p) })
     eq([r.ok, r.code], [false, 'INVALID_CREDENTIALS'])
   }
-  const fifth = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: '0000000' })
+  const fifth = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: '0000000', p_device: dv(p) })
   assert(/dikunci/.test(fifth.message), fifth.message)
-  const locked = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin })
+  const locked = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p) })
   eq([locked.ok, locked.code], [false, 'LOCKED'])
   await su.query(`update participant_credentials set locked_until = null where participant_id = $1`, [p.id])
 })
 await test('percobaan berlebihan terkena rate limit', async () => {
   let limited = false
   for (let i = 0; i < 8; i++) {
-    const r = await api.rpc(ANON, 'participant_login', { p_code: 'TIDAKADA', p_pin: '1' })
+    const r = await api.rpc(ANON, 'participant_login', { p_code: 'TIDAKADA', p_pin: '1', p_device: 'uji-perangkat-0000000000' })
     if (i < 3) eq(r.code, 'INVALID_CREDENTIALS')
   }
-  for (let i = 0; i < 4; i++) limited ||= (await api.rpc(ANON, 'participant_login', { p_code: 'TIDAKADA', p_pin: '1' })).code === 'RATE_LIMITED'
+  for (let i = 0; i < 4; i++) limited ||= (await api.rpc(ANON, 'participant_login', { p_code: 'TIDAKADA', p_pin: '1', p_device: 'uji-perangkat-0000000000' })).code === 'RATE_LIMITED'
   assert(limited, 'rate limit tidak aktif')
   await su.query(`delete from rate_limits`)
 })
-await test('login benar memberi token; token tidak tersimpan mentah; login baru mencabut sesi lama', async () => {
+await test('login benar memberi token; token tidak tersimpan mentah; login ulang di perangkat yang sama mencabut sesi lama', async () => {
   const p = P[40]
-  const a = await api.rpc(ANON, 'participant_login', { p_code: p.code.toLowerCase(), p_pin: p.pin })
+  const a = await api.rpc(ANON, 'participant_login', { p_code: p.code.toLowerCase(), p_pin: p.pin, p_device: dv(p) })
   assert(a.ok && a.token.length === 64 && a.participant.name === p.name)
   eq(await val(`select count(*)::int from participant_sessions where token_hash = $1`, [a.token]), 0)
-  const b = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin })
+  const b = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p) })
   eq((await api.rpc(ANON, 'participant_get_state', { p_token: a.token })).code, 'UNAUTHENTICATED')
   eq((await api.rpc(ANON, 'participant_get_state', { p_token: b.token })).ok, true)
+})
+await test('satu perangkat per peserta: perangkat lain ditolak, tercatat, dan baru bisa masuk setelah admin mereset perangkat', async () => {
+  const p = P[42]
+  const a = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'A'), p_device_label: 'Android · Chrome' })
+  assert(a.ok, JSON.stringify(a))
+  // perangkat B dengan PIN benar ditolak; sesi perangkat A tetap hidup
+  const b = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'B'), p_device_label: 'iOS · Safari' })
+  eq([b.ok, b.code], [false, 'DEVICE_LOCKED'])
+  eq((await api.rpc(ANON, 'participant_get_state', { p_token: a.token })).ok, true)
+  // PIN salah dari perangkat B tidak membocorkan status kunci
+  const bad = await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: '0000009', p_device: dv(p, 'B') })
+  eq(bad.code, 'INVALID_CREDENTIALS')
+  // tanpa identitas perangkat ditolak
+  eq((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin })).code, 'DEVICE_REQUIRED')
+  // logout tidak melepas kunci
+  await api.rpc(ANON, 'participant_logout', { p_token: a.token })
+  eq((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'B'), p_device_label: 'iOS · Safari' })).code, 'DEVICE_LOCKED')
+  // perangkat A masih bisa masuk lagi
+  assert((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'A') })).ok)
+  // status untuk panitia
+  const st = (await api.rpc(adminA, 'admin_device_status', { p_event_id: eventA })).find((x) => x.participant_id === p.id)
+  assert(st && st.bound && st.label === 'Android · Chrome' && st.blocked_attempts === 2 && st.last_blocked_label === 'iOS · Safari', JSON.stringify(st))
+  // hak akses: admin event lain tidak boleh; kolom kredensial tidak terbaca lewat API
+  await rejects(api.rpc(adminB, 'admin_reset_devices', { p_event_id: eventA, p_participant_ids: [p.id] }), /Akses ditolak/)
+  await rejects(api.rpc(adminB, 'admin_device_status', { p_event_id: eventA }), /Akses ditolak/)
+  await rejects(api.sql(adminA, `select bound_device_id from participant_credentials`), /permission denied/)
+  eq(await api.rpc(adminA, 'admin_reset_devices', { p_event_id: eventA, p_participant_ids: [p.id] }), 1)
+  eq((await api.rpc(ANON, 'participant_get_state', { p_token: (await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'A') })).token })).ok, true)
+  // setelah reset, perangkat baru (B) menjadi perangkat peserta dan A ditolak
+  eq(await api.rpc(superadmin, 'admin_reset_devices', { p_event_id: eventA, p_participant_ids: [p.id] }), 1)
+  assert((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'B') })).ok)
+  eq((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'A') })).code, 'DEVICE_LOCKED')
+  assert(await val(`select count(*)::int from audit_logs where action = 'reset_device'`) >= 2)
+  await api.rpc(adminA, 'admin_reset_devices', { p_event_id: eventA, p_participant_ids: [p.id] })
+  await su.query(`delete from rate_limits`)
+})
+await test('reset PIN melepas kunci perangkat', async () => {
+  const p = P[43]
+  assert((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'A') })).ok)
+  eq((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'B') })).code, 'DEVICE_LOCKED')
+  const [r] = await api.rpc(adminA, 'admin_reset_pins', { p_event_id: eventA, p_participant_ids: [p.id] })
+  p.pin = r.pin
+  assert((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p, 'B') })).ok)
+  await api.rpc(adminA, 'admin_reset_devices', { p_event_id: eventA, p_participant_ids: [p.id] })
+  await su.query(`delete from rate_limits`)
 })
 await test('reset PIN: PIN lama mati, PIN baru berlaku', async () => {
   const p = P[41]
   const [r] = await api.rpc(adminA, 'admin_reset_pins', { p_event_id: eventA, p_participant_ids: [p.id] })
   assert(r.pin !== p.pin || true)
-  eq((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: r.pin })).ok, true)
-  if (r.pin !== p.pin) eq((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin })).ok, false)
+  eq((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: r.pin, p_device: dv(p) })).ok, true)
+  if (r.pin !== p.pin) eq((await api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p) })).ok, false)
   p.pin = r.pin
   await su.query(`delete from rate_limits`)
 })
@@ -261,7 +307,7 @@ await test('validasi urutan status: tidak bisa mulai babak / soal sebelum sesi d
   await rejects(api.rpc(adminA, 'next_question', { p_session_id: session.id }), /tidak sedang berjalan/)
 })
 await test('45 peserta login & bergabung ke sesi yang dibuka', async () => {
-  const res = await Promise.all(P.map((p) => api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin })))
+  const res = await Promise.all(P.map((p) => api.rpc(ANON, 'participant_login', { p_code: p.code, p_pin: p.pin, p_device: dv(p) })))
   assert(res.every((r) => r.ok), 'ada login gagal: ' + JSON.stringify(res.find((r) => !r.ok)))
   res.forEach((r, i) => (P[i].token = r.token))
   const st = await pstate(0)

@@ -331,6 +331,7 @@
   <ul>
     <li><b>Verifikasi:</b> hanya peserta berstatus <b>Terverifikasi</b> yang dapat dimasukkan ke sesi. Centang peserta lalu klik <b>Verifikasi</b>. Peserta hasil impor otomatis terverifikasi.</li>
     <li><b>Reset PIN:</b> ikon kunci pada satu peserta, atau centang beberapa peserta lalu <b>Reset PIN</b>. PIN lama langsung mati dan login lama peserta keluar.</li>
+    <li><b>Reset perangkat:</b> satu peserta hanya boleh memakai <b>satu perangkat</b> (anti-curang). Perangkat pertama yang berhasil masuk mengunci akun; login dari HP lain ditolak walau PIN benar. Kolom <b>Perangkat</b> menunjukkan <i>Terkunci</i> beserta jenis HP, dan baris merah bila ada percobaan dari perangkat lain. Bila peserta memang berganti HP secara sah, klik ikon <b>HP</b> pada barisnya (atau centang beberapa peserta lalu <b>Reset perangkat</b>). Tindakan tercatat di Audit Log; Superadmin dan Admin berizin Peserta dapat melakukannya.</li>
     <li><b>Kartu peserta:</b> tombol biru <b>Kartu peserta</b> membuat kartu PDF siap bagi (lihat di bawah). Pada jendela <b>Kode &amp; PIN peserta</b> tersedia juga <b>Unduh kartu (PDF)</b> dan <b>Unduh Excel</b>.</li>
     <li><b>Export:</b> tombol <b>Export</b> mengunduh daftar peserta sesuai penyaring.</li>
   </ul>
@@ -347,7 +348,7 @@
   <figure><img src="img/ad-22-kartu-dialog.jpg" alt=""><figcaption>Jendela Kartu peserta: pilih untuk siapa kartu dibuat.</figcaption></figure>
   <figure><img style="max-width:62%" src="img/ad-23-kartu-contoh.jpg" alt=""><figcaption>Contoh kartu peserta (data contoh). QR membuka halaman masuk dengan kode sudah terisi; peserta hanya mengetik PIN.</figcaption></figure>
   <div class="box warn"><b class="t">Membuat kartu = mengganti PIN</b>PIN disimpan terenkripsi sehingga tidak bisa ditampilkan lagi. Karena itu setiap kartu memakai <b>PIN baru</b>, dan PIN lama langsung tidak berlaku (peserta yang sedang masuk dikeluarkan). Buat kartu <u>sebelum</u> dibagikan. Setelah dibagikan, buat ulang hanya untuk peserta yang lupa PIN. Simpan berkas PDF dengan aman.</div>
-  <div class="box warn"><b class="t">Kartu peserta bersifat rahasia</b>Bagikan kartu langsung kepada masing-masing peserta. Satu akun hanya dapat dipakai di satu HP pada satu waktu; login baru mengeluarkan login lama.</div>
+  <div class="box warn"><b class="t">Kartu peserta bersifat rahasia</b>Bagikan kartu langsung kepada masing-masing peserta. Satu akun hanya dapat dipakai di satu HP: HP pertama yang berhasil masuk mengunci akun peserta, dan login dari HP lain ditolak sampai admin menekan <b>Reset perangkat</b>.</div>
   <div class="box"><b class="t">Peserta yang sudah menjawab</b>Peserta yang sudah memiliki riwayat jawaban tidak dapat dihapus. Ubah <b>status keikutsertaan</b> menjadi Mundur atau Diskualifikasi.</div>
 
   <h2>B3. Bank Soal</h2>
@@ -490,7 +491,8 @@
     <tr><td>Tombol “Buka sesi” tidak berfungsi</td><td>Sesi belum punya peserta atau belum punya babak.</td></tr>
     <tr><td>Soal tidak bisa ditayangkan</td><td>Babak belum <b>dimulai</b>, soal habis, atau soal sebelumnya belum ditutup.</td></tr>
     <tr><td>Lencana “Polling” di panel kontrol</td><td>Aman. Sambungan realtime sedang tidak aktif; data tetap sinkron. Muat ulang halaman bila ingin mencoba tersambung lagi.</td></tr>
-    <tr><td>Peserta “Sesi login berakhir”</td><td>Minta peserta masuk lagi. Penyebab umum: login di HP lain, atau PIN direset.</td></tr>
+    <tr><td>Peserta “Sesi login berakhir”</td><td>Minta peserta masuk lagi. Penyebab umum: PIN direset atau perangkat direset.</td></tr>
+    <tr><td>“Akun sudah terkunci pada perangkat lain”</td><td>Peserta mencoba masuk dari HP berbeda. Periksa kolom <b>Perangkat</b> di Data Peserta; bila sah, <b>Reset perangkat</b>, lalu minta peserta masuk lagi.</td></tr>
     <tr><td>Peserta terkunci</td><td>Salah PIN 5 kali mengunci akun 5 menit. Tunggu atau <b>Reset PIN</b>.</td></tr>
     <tr><td>Monitor kosong atau macet</td><td>Muat ulang <code>/live/KODE</code>. Keadaan lomba dipulihkan dari server; tidak ada data yang hilang.</td></tr>
     <tr><td>Muncul pesan “tidak memiliki hak akses”</td><td>Izin untuk modul itu belum diberikan Superadmin.</td></tr>
@@ -543,7 +545,7 @@
     <figure><img src="img/pe-01-login.jpg" alt=""><figcaption>Halaman masuk</figcaption></figure>
     <figure><img src="img/pe-02-menunggu.jpg" alt=""><figcaption>Berhasil masuk, menunggu</figcaption></figure>
   </div>
-  <div class="box warn"><b class="t">Salah PIN?</b>Jika salah PIN 5 kali, akun terkunci 5 menit. Tenang, tunggu atau minta panitia mereset PIN. Jika Anda masuk di HP lain, HP yang lama otomatis keluar.</div>
+  <div class="box warn"><b class="t">Salah PIN?</b>Jika salah PIN 5 kali, akun terkunci 5 menit. Tenang, tunggu atau minta panitia mereset PIN. Satu akun hanya bisa dipakai di <b>satu HP</b>: HP pertama yang berhasil masuk mengunci akunmu. Bila kamu perlu berganti HP, minta panitia mereset perangkatmu.</div>
 
   <h2>C3. Menjawab soal</h2>
   <ol class="steps">

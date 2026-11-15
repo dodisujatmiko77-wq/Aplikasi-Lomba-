@@ -220,7 +220,7 @@ function ResultScreen({ s }: { s: LiveState }) {
   const q = s.question!
   const r = q.reveal
   const max = Math.max(1, ...q.options.map((o) => o.count ?? 0))
-  const top = (s.leaderboard ?? []).slice(0, 5)
+  const top = (s.leaderboard ?? []).slice(0, 10)
   return (
     <div className="grid h-full grid-cols-[1.35fr_1fr]" style={{ gap: u(2.4) }}>
       <div className="flex min-h-0 flex-col" style={{ gap: u(1.6) }}>
@@ -256,7 +256,7 @@ function ResultScreen({ s }: { s: LiveState }) {
       </div>
       <div className="rounded-3xl border border-white/10 bg-white/[0.04]" style={{ padding: u(1.6) }}>
         <p className="font-heading font-bold uppercase tracking-widest text-navy-200" style={{ fontSize: u(1.6), marginBottom: u(1) }}>Klasemen sementara</p>
-        <Board rows={top} limit={5} size={2.3} />
+        <Board rows={top} limit={10} size={top.length > 5 ? 1.75 : 2.3} />
       </div>
     </div>
   )

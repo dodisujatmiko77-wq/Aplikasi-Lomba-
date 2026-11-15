@@ -50,7 +50,8 @@ Kontrol lain: **Jeda/Lanjutkan** (waktu menjawab tidak berkurang), **Batalkan so
 | Gejala | Tindakan |
 |---|---|
 | Badge *Polling* di panel kontrol | Aman. Realtime sedang tidak tersambung; data tetap sinkron ≤ 1,5 dtk. Cek pengaturan Realtime Supabase. |
-| Peserta "Sesi login berakhir" | Login lagi. Login baru di HP lain mencabut login lama (satu perangkat per peserta). |
+| Peserta "Sesi login berakhir" | Login lagi di HP yang sama. |
+| Peserta "Akun sudah terkunci pada perangkat lain" | Satu peserta hanya boleh satu perangkat (anti-curang). Bila peserta memang berganti HP secara sah: **Data Peserta → ikon HP (Reset perangkat)**. Percobaan dari perangkat lain tampil merah di kolom *Perangkat* — periksa dulu sebelum mereset. |
 | Peserta terkunci | 5× salah PIN → terkunci 5 menit, atau *Reset PIN*. |
 | Monitor kosong/putus | Muat ulang `/live/<kode>`; state dipulihkan dari server. |
 | Soal tak bisa ditayangkan | Pastikan babak sudah *dimulai*, soal tersisa, dan soal sebelumnya sudah ditutup. |

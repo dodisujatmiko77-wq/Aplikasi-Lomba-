@@ -54,7 +54,7 @@ await ph.screenshot({ path: `${OUT}/05-hp-terkirim.png` })
 const q = await sql(`competition_questions?id=eq.${(await rpc('admin_get_control_state', { p_session_id: sid })).current.id}&select=id`)
 const cq = q[0].id
 await Promise.all(demo.creds.slice(1, 21).map(async (c, i) => {
-  const lg = await (await fetch(`${API}/rest/v1/rpc/participant_login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ p_code: c.code, p_pin: c.pin }) })).json()
+  const lg = await (await fetch(`${API}/rest/v1/rpc/participant_login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ p_code: c.code, p_pin: c.pin, p_device: 'ui-perangkat-' + c.code }) })).json()
   const st = await (await fetch(`${API}/rest/v1/rpc/participant_get_state`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ p_token: lg.token }) })).json()
   await sleep(i * 150)
   await fetch(`${API}/rest/v1/rpc/submit_answer`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ p_token: lg.token, p_competition_question_id: cq, p_option_id: st.question.options[i % 4].id, p_answer_text: null, p_idempotency_key: crypto.randomUUID() }) })

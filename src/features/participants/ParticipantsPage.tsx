@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { BadgeCheck, Download, FileDown, IdCard, KeyRound, Pencil, Plus, Trash2, Upload } from 'lucide-react'
+import { BadgeCheck, Download, FileDown, IdCard, KeyRound, Pencil, Plus, ShieldAlert, Smartphone, Trash2, Upload } from 'lucide-react'
 import { list, listByIds, rpc, update } from '@/services/db'
 import { useAuth } from '@/contexts/AuthContext'
 import { useDistricts, useEvent, useLevels } from '@/contexts/EventContext'
@@ -28,6 +28,7 @@ interface Draft {
   id?: string; participant_number: string; full_name: string; school: string; education_level_id: string; district_id: string
   photo_url: string | null; code: string; pin: string; registration_status: EventParticipant['registration_status']; participation_status: EventParticipant['participation_status']
 }
+interface DeviceInfo { participant_id: string; bound: boolean; bound_at: string | null; label: string | null; blocked_attempts: number; last_blocked_at: string | null; last_blocked_label: string | null }
 interface Credential { code: string; pin: string | null; full_name: string; participant_number: string }
 interface ImportResult { row: number; ok: boolean; error?: string; code?: string; pin?: string | null; full_name?: string; participant_number?: string; created?: boolean }
 
@@ -66,7 +67,15 @@ function Inner({ eventId }: { eventId: string }) {
       return ps.map((p) => ({ ...p, ep: byId.get(p.id)! })).sort((a, b) => a.participant_number.localeCompare(b.participant_number, 'id', { numeric: true }))
     },
   })
-  const reload = () => qc.invalidateQueries({ queryKey: ['participants', eventId] })
+  const { data: devices = [] } = useQuery({
+    queryKey: ['participant-devices', eventId],
+    enabled: canEdit,
+    refetchInterval: 15000,
+    queryFn: () => rpc<DeviceInfo[]>('admin_device_status', { p_event_id: eventId }),
+  })
+  const deviceMap = useMemo(() => new Map(devices.map((d) => [d.participant_id, d])), [devices])
+  const blockedCount = devices.filter((d) => d.blocked_attempts > 0).length
+  const reload = () => { void qc.invalidateQueries({ queryKey: ['participants', eventId] }); void qc.invalidateQueries({ queryKey: ['participant-devices', eventId] }) }
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -111,6 +120,16 @@ function Inner({ eventId }: { eventId: string }) {
       setCreds(out)
       setSelected(new Set())
     })
+  }
+
+  const resetDevices = async (ids: string[]) => {
+    if (!ids.length) return
+    if (!(await confirm({ title: `Reset perangkat ${ids.length} peserta?`, description: 'Kunci perangkat dilepas dan peserta yang sedang masuk dikeluarkan. Perangkat berikutnya yang berhasil masuk dengan kode + PIN akan menjadi perangkat peserta tersebut. Tindakan ini tercatat di Audit Log.', confirmLabel: 'Reset perangkat' }))) return
+    await run(async () => {
+      await rpc('admin_reset_devices', { p_event_id: eventId, p_participant_ids: ids })
+      reload()
+      setSelected(new Set())
+    }, `Perangkat ${ids.length} peserta direset`)
   }
 
   const verify = async (ids: string[]) => {
@@ -205,6 +224,12 @@ function Inner({ eventId }: { eventId: string }) {
         }
       />
 
+      {canEdit && blockedCount > 0 && (
+        <div role="alert" className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          <ShieldAlert className="mt-0.5 size-5 shrink-0" />
+          <p><b>{blockedCount} peserta</b> mencoba masuk dari perangkat lain dan ditolak. Periksa kolom <b>Perangkat</b>. Bila peserta memang berganti HP secara sah, klik ikon <b>Reset perangkat</b> pada barisnya.</p>
+        </div>
+      )}
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
         {summary.map((l) => (
           <Card key={l.id} className="p-4">
@@ -231,6 +256,7 @@ function Inner({ eventId }: { eventId: string }) {
               <Button size="sm" variant="outline" onClick={() => void verify([...selected])}><BadgeCheck /> Verifikasi</Button>
               <Button size="sm" variant="outline" onClick={() => setCardsOpen(true)}><IdCard /> Kartu peserta</Button>
               <Button size="sm" variant="outline" onClick={() => void resetPins([...selected])}><KeyRound /> Reset PIN</Button>
+              <Button size="sm" variant="outline" onClick={() => void resetDevices([...selected])}><Smartphone /> Reset perangkat</Button>
             </div>
           )}
         </div>
@@ -242,7 +268,7 @@ function Inner({ eventId }: { eventId: string }) {
               <THead>
                 <TR>
                   {canEdit && <TH className="w-10"><Checkbox checked={allOnPage} onCheckedChange={(v) => setSelected((s) => { const n = new Set(s); paged.slice.forEach((r) => (v ? n.add(r.id) : n.delete(r.id))); return n })} aria-label="Pilih semua" /></TH>}
-                  <TH>No</TH><TH>Peserta</TH><TH>Kode</TH><TH>Jenjang</TH><TH>Kecamatan</TH><TH>Registrasi</TH><TH>Keikutsertaan</TH>{canEdit && <TH className="w-28" />}
+                  <TH>No</TH><TH>Peserta</TH><TH>Kode</TH><TH>Jenjang</TH><TH>Kecamatan</TH><TH>Status</TH>{canEdit && <TH>Perangkat</TH>}{canEdit && <TH className="w-28" />}
                 </TR>
               </THead>
               <TBody>
@@ -259,8 +285,34 @@ function Inner({ eventId }: { eventId: string }) {
                     <TD className="font-mono text-xs font-semibold tracking-wider">{r.code}</TD>
                     <TD>{levelMap.get(r.education_level_id)?.code}</TD>
                     <TD>{districtMap.get(r.district_id)?.name}</TD>
-                    <TD><Badge variant={REG_VARIANT[r.ep.registration_status]}>{LABELS.registration[r.ep.registration_status]}</Badge></TD>
-                    <TD><Badge variant={PART_VARIANT[r.ep.participation_status]}>{LABELS.participation[r.ep.participation_status]}</Badge></TD>
+                    <TD>
+                      <div className="flex flex-col items-start gap-1">
+                        <Badge variant={REG_VARIANT[r.ep.registration_status]}>{LABELS.registration[r.ep.registration_status]}</Badge>
+                        <Badge variant={PART_VARIANT[r.ep.participation_status]}>{LABELS.participation[r.ep.participation_status]}</Badge>
+                      </div>
+                    </TD>
+                    {canEdit && (
+                      <TD>
+                        {(() => {
+                          const d = deviceMap.get(r.id)
+                          if (!d?.bound) return <span className="text-xs text-muted-foreground">Belum masuk</span>
+                          return (
+                            <div className="text-xs leading-tight">
+                              <div className="flex items-center gap-1">
+                                <Badge variant="green">Terkunci</Badge>
+                                <Button size="icon" variant="ghost" className="size-7" onClick={() => void resetDevices([r.id])} aria-label="Reset perangkat" title="Reset perangkat"><Smartphone /></Button>
+                              </div>
+                              <p className="mt-0.5 max-w-[9rem] truncate text-muted-foreground" title={d.label ?? ''}>{d.label}</p>
+                              {d.blocked_attempts > 0 && (
+                                <p className="mt-1 flex items-center gap-1 font-semibold text-red-600" title={d.last_blocked_label ?? ''}>
+                                  <ShieldAlert className="size-3.5" /> {d.blocked_attempts}× ditolak (perangkat lain)
+                                </p>
+                              )}
+                            </div>
+                          )
+                        })()}
+                      </TD>
+                    )}
                     {canEdit && (
                       <TD className="whitespace-nowrap text-right">
                         <Button size="icon" variant="ghost" onClick={() => openEdit(r)} aria-label="Ubah"><Pencil /></Button>

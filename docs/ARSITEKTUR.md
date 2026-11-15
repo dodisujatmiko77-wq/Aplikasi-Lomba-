@@ -235,7 +235,7 @@ Pada mode `speed`, butir 3 dan 4 ditukar. Fungsi `_leaderboard_ranked()` adalah 
 2. Satu sesi kompetisi = satu jenjang dalam satu event; kecamatan adalah master data global yang dinamis.
 3. Bank soal dan paket soal dimiliki oleh event (mempermudah isolasi akses admin). Pemindahan antar-event memakai export/import Excel.
 4. PIN peserta 6 digit, dibuat sistem (atau dari kolom Excel). PIN hanya ditampilkan/diunduh sekali saat dibuat atau direset.
-5. Satu peserta hanya punya satu sesi login aktif; login baru mencabut sesi lama.
+5. **Satu peserta = satu perangkat.** Perangkat pertama yang berhasil masuk mengunci akun (`participant_credentials.bound_device_id`, identitas acak yang disimpan aplikasi/browser). Login dari perangkat lain ditolak (`DEVICE_LOCKED`) walau PIN benar; percobaan dicatat (`blocked_attempts`) dan tampil di Data Peserta. Hanya Superadmin/Admin berizin `participants` yang dapat melepas kunci lewat RPC `admin_reset_devices` (tercatat di audit log). Reset PIN/kartu baru juga melepas kunci. Logout tidak melepas kunci. Satu perangkat tetap hanya punya satu sesi aktif (login ulang mencabut sesi lama).
 6. Tidak menjawab dihitung sebagai kesalahan pada aturan eliminasi `wrong_count` (dapat dimatikan per babak).
 7. Tidak ada cron server: penutupan soal saat deadline dilakukan secara *lazy* dan idempoten oleh snapshot RPC pertama setelah deadline (atau oleh operator).
 8. Bucket Storage bersifat publik-baca dengan nama berkas acak; hanya admin aktif yang dapat mengunggah.

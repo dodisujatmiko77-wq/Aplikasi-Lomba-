@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CheckCircle2, Hourglass, LogOut, PauseCircle, Send, Skull, Trophy, WifiOff, XCircle } from 'lucide-react'
 import { rpc } from '@/services/db'
+import { deviceId, deviceLabel } from '@/lib/device'
 import { useLiveState } from '@/hooks/useLiveState'
 import { serverNow, useServerNow } from '@/hooks/useServerClock'
 import { Logo } from '@/components/common'
@@ -34,7 +35,7 @@ function Login({ onLogin }: { onLogin: (token: string) => void }) {
     e.preventDefault()
     setBusy(true); setErr(null)
     try {
-      const r = await rpc<{ ok: boolean; token?: string; message?: string }>('participant_login', { p_code: code, p_pin: pin })
+      const r = await rpc<{ ok: boolean; token?: string; message?: string }>('participant_login', { p_code: code, p_pin: pin, p_device: deviceId(), p_device_label: deviceLabel() })
       if (!r.ok || !r.token) throw new Error(r.message ?? 'Gagal masuk')
       onLogin(r.token)
     } catch (e2) { setErr(e2 instanceof Error ? e2.message : 'Gagal masuk') } finally { setBusy(false) }

@@ -17,6 +17,7 @@ jobs:
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       APP_VERSION_CODE: ${{ github.run_number }}
       APP_VERSION_NAME: 1.0.${{ github.run_number }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -68,3 +69,11 @@ jobs:
           prerelease: true
           files: out/Lomba-Rangking-1.apk
           overwrite_files: true
+      - name: Unggah ke Supabase Storage (opsional, untuk tautan unduh di situs sendiri)
+        if: env.SUPABASE_SERVICE_ROLE_KEY != ''
+        run: |
+          URL=$(grep -oP "SUPABASE_URL: '\K[^']+" public/config.js)
+          curl --fail-with-body -sS -X POST "$URL/storage/v1/object/apk/Lomba-Rangking-1.apk" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "x-upsert: true" -H "Content-Type: application/vnd.android.package-archive" \
+            --data-binary @out/Lomba-Rangking-1.apk

@@ -15,6 +15,20 @@ APK dibangun otomatis oleh GitHub Actions (`.github/workflows/build-apk.yml`) se
 
 Membangun ulang manual: GitHub → **Actions** → *Build APK Android* → **Run workflow**.
 
+## Tautan unduh di situs sendiri (tanpa membagikan alamat GitHub)
+Peserta cukup diberi **`https://lomba-rangking1.vercel.app/unduh`** (halaman unduh dengan petunjuk pasang) atau tautan langsung
+**`https://lomba-rangking1.vercel.app/Lomba-Rangking-1.apk`**. Situs meneruskan berkas dari bucket Storage publik `apk` di Supabase.
+
+Penyiapan (sekali):
+1. Supabase → SQL Editor → jalankan `supabase/migrations/0008_apk_bucket.sql` (membuat bucket publik `apk`).
+2. Unduh `Lomba-Rangking-1.apk` dari Release GitHub, lalu Supabase → **Storage → apk → Upload** (nama berkas harus persis `Lomba-Rangking-1.apk`; pilih *replace* bila sudah ada).
+3. Setelah Vercel selesai memproses push terbaru, buka `/unduh` dan coba unduh.
+
+Otomatis (opsional): tambahkan secret **`SUPABASE_SERVICE_ROLE_KEY`** di GitHub → Settings → Secrets and variables → Actions. Setiap build APK lalu mengunggah APK baru ke bucket itu sendiri.
+Kunci `service_role` bersifat rahasia (jangan ditaruh di kode atau dibagikan).
+
+Agar kode sumber tidak bisa dikloning orang: ubah repositori GitHub menjadi **Private** (Settings → General → Danger Zone → Change visibility). Build APK dan deploy Vercel tetap berjalan.
+
 ## Tanda tangan APK
 | Kondisi | Hasil |
 |---|---|

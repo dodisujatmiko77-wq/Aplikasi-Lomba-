@@ -268,23 +268,20 @@ function Inner({ eventId }: { eventId: string }) {
               <THead>
                 <TR>
                   {canEdit && <TH className="w-10"><Checkbox checked={allOnPage} onCheckedChange={(v) => setSelected((s) => { const n = new Set(s); paged.slice.forEach((r) => (v ? n.add(r.id) : n.delete(r.id))); return n })} aria-label="Pilih semua" /></TH>}
-                  <TH>No</TH><TH>Peserta</TH><TH>Kode</TH><TH>Jenjang</TH><TH>Kecamatan</TH><TH>Status</TH>{canEdit && <TH>Perangkat</TH>}{canEdit && <TH className="w-28" />}
+                  <TH>Peserta</TH><TH>Jenjang / Kecamatan</TH><TH>Status</TH>{canEdit && <TH>Perangkat</TH>}{canEdit && <TH className="w-28" />}
                 </TR>
               </THead>
               <TBody>
                 {paged.slice.map((r) => (
                   <TR key={r.id}>
                     {canEdit && <TD><Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggle(r.id)} aria-label={`Pilih ${r.full_name}`} /></TD>}
-                    <TD className="tabular whitespace-nowrap font-medium">{r.participant_number}</TD>
                     <TD>
                       <div className="flex items-center gap-3">
                         <Avatar name={r.full_name} src={r.photo_url} size={34} />
-                        <div className="min-w-0"><p className="truncate font-semibold text-navy-900">{r.full_name}</p><p className="truncate text-xs text-muted-foreground">{r.school || '—'}</p></div>
+                        <div className="min-w-0"><p className="truncate font-semibold text-navy-900">{r.full_name}</p><p className="truncate text-xs text-muted-foreground">{r.school || '—'}</p><p className="font-mono text-[11px] font-semibold tracking-wider text-navy-700">{r.participant_number} · {r.code}</p></div>
                       </div>
                     </TD>
-                    <TD className="font-mono text-xs font-semibold tracking-wider">{r.code}</TD>
-                    <TD>{levelMap.get(r.education_level_id)?.code}</TD>
-                    <TD>{districtMap.get(r.district_id)?.name}</TD>
+                    <TD><p className="font-semibold">{levelMap.get(r.education_level_id)?.code}</p><p className="text-xs text-muted-foreground">{districtMap.get(r.district_id)?.name}</p></TD>
                     <TD>
                       <div className="flex flex-col items-start gap-1">
                         <Badge variant={REG_VARIANT[r.ep.registration_status]}>{LABELS.registration[r.ep.registration_status]}</Badge>

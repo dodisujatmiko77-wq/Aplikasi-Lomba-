@@ -116,7 +116,7 @@
   <p>Selama lomba ada tiga “layar” yang bekerja bersamaan:</p>
   <table>
     <tr><th style="width:32%">Layar</th><th>Dipakai oleh</th><th>Fungsi</th></tr>
-    <tr><td><b>HP peserta</b></td><td>Peserta</td><td>Masuk dengan kode dan PIN, membaca soal, mengirim jawaban.</td></tr>
+    <tr><td><b>HP peserta</b></td><td>Peserta</td><td>Memasang <b>aplikasi (APK) Lomba Rangking 1</b> dari panitia, masuk dengan kode dan PIN, membaca soal, mengirim jawaban. Satu peserta hanya boleh satu perangkat.</td></tr>
     <tr><td><b>Panel kontrol</b></td><td>Operator (laptop)</td><td>Memulai babak, menayangkan soal, menutup soal, membuka jawaban, mengumumkan pemenang.</td></tr>
     <tr><td><b>Monitor</b></td><td>Penonton (TV/proyektor)</td><td>Menampilkan soal, hitung mundur, klasemen, dan podium juara.</td></tr>
   </table>
@@ -133,7 +133,8 @@
     <tr><th style="width:36%">Alamat</th><th>Untuk apa</th></tr>
     <tr><td><code>lomba-rangking1.vercel.app/</code></td><td>Beranda publik: jadwal, hasil, panduan.</td></tr>
     <tr><td><code>lomba-rangking1.vercel.app/login</code></td><td>Masuk Superadmin dan Admin.</td></tr>
-    <tr><td><code>lomba-rangking1.vercel.app/peserta</code></td><td>Masuk peserta (dibuka dari HP).</td></tr>
+    <tr><td><code>Lomba-Rangking-1.apk</code></td><td>Aplikasi Android resmi dari panitia. <b>Wajib dipasang oleh setiap peserta</b>; dibagikan panitia.</td></tr>
+    <tr><td><code>lomba-rangking1.vercel.app/peserta</code></td><td>Masuk peserta lewat web (cadangan; lomba tetap memakai aplikasi).</td></tr>
     <tr><td><code>lomba-rangking1.vercel.app/live/KODE</code></td><td>Monitor satu sesi. <code>KODE</code> terdiri dari 6 karakter dan tertera di halaman sesi.</td></tr>
     <tr><td><code>lomba-rangking1.vercel.app/hasil/KODE</code></td><td>Hasil resmi satu sesi (tampil setelah hasil dipublikasikan).</td></tr>
   </table>
@@ -145,7 +146,7 @@
     <li><b>Superadmin</b> membuat event, akun Admin, dan memberi hak akses.</li>
     <li><b>Admin</b> mengimpor peserta, membagikan kartu kode + PIN, dan menyiapkan bank soal.</li>
     <li><b>Admin</b> membuat sesi per jenjang, mengisi peserta, babak, dan soal.</li>
-    <li><b>Operator</b> membuka sesi; peserta masuk lewat HP; monitor dinyalakan.</li>
+    <li><b>Operator</b> membuka sesi; peserta masuk lewat aplikasi di HP-nya (satu perangkat per peserta); monitor dinyalakan.</li>
     <li><b>Operator</b> menjalankan soal demi soal dari Panel Kontrol.</li>
     <li><b>Operator</b> mengakhiri babak, memutus seri bila perlu, lalu mengumumkan pemenang.</li>
     <li><b>Admin</b> mengunduh hasil, mencetak sertifikat, dan mempublikasikan hasil.</li>
@@ -230,7 +231,7 @@
   </ol>
   <table>
     <tr><th style="width:22%">Izin</th><th>Artinya</th></tr>
-    <tr><td><b>Peserta</b></td><td>Menambah, mengubah, mengimpor peserta; verifikasi; reset PIN.</td></tr>
+    <tr><td><b>Peserta</b></td><td>Menambah, mengubah, mengimpor peserta; verifikasi; reset PIN dan reset perangkat.</td></tr>
     <tr><td><b>Soal</b></td><td>Mengelola bank soal dan paket soal.</td></tr>
     <tr><td><b>Kontrol</b></td><td>Membuat sesi, mengatur babak, dan menjalankan pertandingan (mulai, jeda, tutup, umumkan).</td></tr>
     <tr><td><b>Laporan</b></td><td>Melihat hasil, mengunduh laporan, mencetak sertifikat.</td></tr>
@@ -249,7 +250,7 @@
     <tr><td>Durasi menjawab</td><td>Bawaan 20 detik (3–600). Dapat ditimpa per babak dan per soal oleh operator.</td></tr>
     <tr><td>Hitung mundur sebelum soal</td><td>Bawaan 3 detik.</td></tr>
     <tr><td>Pembulatan &amp; desimal</td><td>Terdekat/ke bawah/ke atas, bawaan 2 desimal.</td></tr>
-    <tr><td>Baris leaderboard di monitor</td><td>Jumlah peserta yang ditampilkan di layar klasemen (bawaan 10).</td></tr>
+    <tr><td>Baris leaderboard di monitor</td><td>Jumlah peserta yang ditampilkan di layar klasemen (bawaan 10). Klasemen sementara pada layar hasil soal juga menampilkan <b>10 besar</b>.</td></tr>
   </table>
   <p>Kotak <b>Pratinjau</b> di bawah isian langsung menunjukkan skor contoh. Nilai ini menjadi <u>nilai awal setiap babak baru</u>; babak yang sudah dibuat tidak berubah.</p>
   <h3>Pengumuman</h3>
@@ -314,7 +315,7 @@
 
   <h2>B2. Data Peserta</h2>
   <p>Setiap peserta mendapat <b>kode peserta</b> (mis. <code>R7K2MQ</code>) dan <b>PIN</b> 6 digit untuk masuk dari HP. PIN disimpan terenkripsi sehingga tidak bisa dilihat lagi setelah dibuat — hanya bisa direset.</p>
-  <figure><img src="img/ad-01-peserta.jpg" alt=""><figcaption>Data Peserta: ringkasan kuota per jenjang, penyaring, dan daftar.</figcaption></figure>
+  <figure><img src="img/ad-01-peserta.jpg" alt=""><figcaption>Data Peserta: kuota per jenjang, penyaring, dan daftar. Kolom <b>Perangkat</b> menunjukkan HP yang terkunci; merah bila ada percobaan masuk dari HP lain.</figcaption></figure>
   <h3>Mengimpor dari Excel (disarankan)</h3>
   <ol class="steps">
     <li>Klik <b>Template</b> untuk mengunduh berkas contoh.</li>
@@ -408,7 +409,7 @@
     <li><b>Roster:</b> memilih sendiri peserta yang boleh ikut babak itu (keputusan tercatat di audit log; sertakan alasan).</li>
     <li><b>Ubah / hapus babak</b> hanya bisa sebelum babak dimulai.</li>
   </ul>
-  <div class="box ok"><b class="t">Contoh susunan lomba</b>Babak 1 Normal (semua peserta, 20 soal) → Babak 2 Eliminasi (yang lolos, gugur setelah 1 kesalahan) → Babak 3 Final (Top-3, reset skor, 5 soal). Bila tiga besar masih seri, siapkan 2–3 soal cadangan untuk soal tambahan.</div>
+  <div class="box ok"><b class="t">Susunan lomba yang dianjurkan untuk Lomba Rangking 1</b>Cukup <b>satu babak Normal per jenjang</b> (satu sesi per jenjang): semua peserta menjawab semua soal, lalu peringkat 1, 2, dan 3 langsung menjadi <b>Juara 1, 2, dan 3</b>. Tidak perlu babak final atau eliminasi. Bila tiga besar masih seri, siapkan 2–3 soal cadangan untuk <b>soal tambahan</b>. (Mode Eliminasi dan Final tetap tersedia bila suatu saat diperlukan.)</div>
   <p>Setelah semuanya siap, klik <b>Buka sesi untuk peserta</b>. Sesi harus punya minimal satu peserta dan satu babak.</p>
 
   <h2>B6. Hari-H: menjalankan lomba dari Panel Kontrol</h2>
@@ -502,15 +503,17 @@
   <h3>H-7 sampai H-1</h3>
   <ul class="checklist">
     <li>Peserta diimpor dan <b>terverifikasi</b>; kuota per kecamatan terpenuhi.</li>
-    <li>Kartu kode + PIN sudah dicetak dan dibagikan.</li>
+    <li>Kartu kode + PIN sudah dicetak dan dibagikan; <b>APK</b> sudah dibagikan dan terpasang di HP semua peserta.</li>
     <li>Soal lengkap (termasuk soal cadangan untuk seri); durasi diatur.</li>
     <li>Sesi, babak, dan soal sudah disiapkan; <b>gladi resik</b> dengan HP sungguhan sudah dilakukan.</li>
+    <li><b>Setelah gladi resik: reset perangkat semua peserta</b> (Data Peserta → centang semua → <b>Reset perangkat</b>) agar tiap peserta mengunci HP yang benar pada hari lomba.</li>
   </ul>
   <h3>Hari-H sebelum mulai</h3>
   <ul class="checklist">
     <li>Laptop operator, TV/proyektor, dan internet (cadangkan hotspot) siap.</li>
     <li>Monitor dibuka dan layar penuh; QR masuk peserta ditampilkan.</li>
     <li>Sesi <b>dibuka</b>; jumlah peserta <b>online</b> sesuai harapan.</li>
+    <li>Pantau kolom <b>Perangkat</b> di Data Peserta; selidiki peserta yang tertulis merah “ditolak (perangkat lain)”. <b>Reset perangkat</b> hanya bila peserta memang berganti HP secara sah.</li>
   </ul>
   <h3>Setelah lomba</h3>
   <ul class="checklist">
@@ -531,15 +534,23 @@
     <li>Siapkan <b>HP yang baterainya penuh</b> dan terhubung internet (Wi-Fi lokasi atau paket data).</li>
     <li>Ambil <b>kartu peserta</b> dari panitia. Di kartu ada <b>Kode peserta</b> dan <b>PIN</b>. <u>Jangan beri tahu orang lain.</u></li>
     <li>Pastikan layar HP tidak mati sendiri (atur waktu layar ke paling lama) dan nonaktifkan mode hemat daya.</li>
-    <li>Gunakan browser biasa (Chrome atau Safari). Tidak perlu memasang aplikasi.</li>
+    <li><b>Pasang aplikasi (APK) Lomba Rangking 1</b> yang disiapkan panitia. Memasang aplikasi ini <b>wajib</b>; lomba memang bisa dibuka lewat web, tetapi peserta harus memakai aplikasi dari panitia.</li>
   </ul>
+  <h3>Memasang aplikasi (APK)</h3>
+  <ol class="steps">
+    <li>Terima berkas <b>Lomba-Rangking-1.apk</b> dari panitia (jangan mengunduh dari sumber lain).</li>
+    <li>Buka berkas dari HP Android. Bila diminta, izinkan <b>“Pasang aplikasi dari sumber tidak dikenal”</b> untuk aplikasi yang membuka berkas (mis. WhatsApp atau Files).</li>
+    <li>Bila muncul peringatan keamanan (mis. Play Protect), pilih <b>Tetap pasang</b>; APK ini resmi dari panitia.</li>
+    <li>Ketuk <b>Pasang</b>. Ikon <b>Lomba Rangking 1</b> muncul di layar utama. Buka dan pastikan beranda tampil.</li>
+  </ol>
+  <div class="box warn"><b class="t">Satu peserta, satu perangkat</b>HP pertama yang berhasil masuk dengan kode dan PIN <b>mengunci akun</b> Anda. Masuk dari HP lain (termasuk membuka versi web di HP yang sama) akan ditolak walau PIN benar, dan percobaan itu tercatat. Jika perlu berganti HP secara sah, minta panitia mereset perangkat Anda.</div>
 
   <h2>C2. Masuk ke ruang lomba</h2>
   <ol class="steps">
-    <li>Pindai <b>QR di kartu peserta</b> Anda — <b>kode peserta terisi otomatis</b>. Atau buka <code>lomba-rangking1.vercel.app/peserta</code> dan ketik kodenya.</li>
-    <li>Ketik <b>PIN</b> dari kartu (kode peserta sudah terisi bila Anda memindai QR).</li>
+    <li>Buka aplikasi <b>Lomba Rangking 1</b> di HP Anda, lalu pilih <b>Masuk sebagai peserta</b>.</li>
+    <li>Ketik <b>Kode peserta</b> dan <b>PIN</b> dari kartu.</li>
     <li>Tekan <b>Masuk</b>.</li>
-    <li>Jika muncul <b>“Anda sudah masuk”</b>, berarti berhasil. Tunggu panitia memulai. <u>Jangan menutup halaman ini.</u></li>
+    <li>Jika muncul <b>“Anda sudah masuk”</b>, berarti berhasil. Tunggu panitia memulai. <u>Jangan menutup aplikasi.</u></li>
   </ol>
   <div class="phones big">
     <figure><img src="img/pe-01-login.jpg" alt=""><figcaption>Halaman masuk</figcaption></figure>
@@ -592,7 +603,7 @@
   <h2>C6. Aturan dan tips</h2>
   <div class="box ok"><b class="t">Tips cepat dan tepat</b><ul style="margin:0"><li>Baca soal sampai selesai sebelum menyentuh pilihan — jawaban salah = 0 poin, secepat apa pun.</li><li>Cepat itu bagus <u>asal benar</u>. Bonus kecepatan hanya untuk jawaban yang benar.</li><li>Jaga ibu jari di dekat tombol <b>Kirim jawaban</b>, tetapi periksa pilihan Anda dulu.</li></ul></div>
   <ul>
-    <li>Dilarang membagikan atau meminjam kode dan PIN.</li>
+    <li>Dilarang membagikan atau meminjam kode dan PIN, dan dilarang mencoba masuk dari HP lain. Percobaan dari perangkat lain tercatat dan dapat ditindak panitia.</li>
     <li>Dilarang bekerja sama atau melihat jawaban teman. Panitia dapat mengeliminasi peserta yang melanggar; keputusan itu tercatat.</li>
     <li>Jangan memuat ulang halaman terus-menerus. Jika perlu, muat ulang sekali — keadaan lomba dipulihkan otomatis.</li>
   </ul>
@@ -602,7 +613,9 @@
     <tr><th style="width:36%">Masalah</th><th>Yang dilakukan</th></tr>
     <tr><td>“Kode peserta atau PIN salah”</td><td>Periksa kartu. Angka <b>0</b> dan huruf <b>O</b> berbeda. Kode memakai huruf besar.</td></tr>
     <tr><td>Internet terputus saat mengirim</td><td>Tunggu jaringan kembali, lalu tekan <b>Kirim jawaban</b> lagi. Jawaban tidak akan tercatat dua kali.</td></tr>
-    <tr><td>“Sesi login berakhir”</td><td>Masuk lagi dengan kode dan PIN yang sama.</td></tr>
+    <tr><td>“Sesi login berakhir”</td><td>Masuk lagi dengan kode dan PIN yang sama, di HP yang sama.</td></tr>
+    <tr><td>“Akun sudah terkunci pada perangkat lain”</td><td>Anda mencoba masuk dari HP berbeda. Gunakan HP yang pertama kali dipakai masuk, atau minta panitia <b>mereset perangkat</b> Anda.</td></tr>
+    <tr><td>Aplikasi tidak bisa dipasang</td><td>Pastikan Android 7.0 ke atas, izin “sumber tidak dikenal” diberikan, dan berkas APK utuh. Bila tetap gagal, temui panitia sebelum lomba.</td></tr>
     <tr><td>Layar tidak berubah</td><td>Tunggu beberapa detik; halaman memperbarui diri otomatis. Jika tetap, angkat tangan dan panggil panitia.</td></tr>
     <tr><td>Lupa PIN</td><td>Minta panitia mereset PIN di meja registrasi.</td></tr>
   </table>
@@ -649,6 +662,8 @@
   <table>
     <tr><th style="width:38%">Pertanyaan</th><th>Jawaban</th></tr>
     <tr><td>Berapa peserta yang dapat mengikuti bersamaan?</td><td>Aplikasi dirancang dan diuji untuk 135 peserta menjawab dalam waktu berdekatan. Kinerja akhir bergantung pada jaringan lokasi dan paket layanan database; lakukan gladi resik.</td></tr>
+    <tr><td>Bagaimana mencegah satu peserta memakai dua HP atau bertukar HP?</td><td>Setiap akun peserta terkunci pada HP pertama yang berhasil masuk. Login dari HP lain ditolak walau PIN benar, dan percobaannya tercatat (kolom <b>Perangkat</b> di Data Peserta). Hanya Superadmin atau Admin berizin Peserta yang dapat <b>mereset perangkat</b>; setiap reset tercatat di Audit Log.</td></tr>
+    <tr><td>Apakah peserta wajib memasang APK?</td><td>Ya. Lomba bisa dibuka lewat web, tetapi seluruh peserta wajib memakai APK yang disiapkan panitia. Membuka web di HP yang sama setelah memakai APK dianggap perangkat lain dan ditolak sampai direset.</td></tr>
     <tr><td>Apakah peserta bisa curang dengan mengubah skor di HP?</td><td>Tidak. Skor dan waktu dihitung server; HP hanya mengirim pilihan jawaban.</td></tr>
     <tr><td>Bagaimana bila internet peserta putus?</td><td>Halaman tersambung ulang otomatis dan mengambil keadaan terbaru. Jawaban yang dikirim ulang tidak tercatat ganda. Namun jawaban yang tiba setelah waktu habis ditolak.</td></tr>
     <tr><td>Siapa saja yang bisa melihat kunci jawaban?</td><td>Admin yang berhak atas event itu (di Bank Soal). Peserta dan monitor tidak pernah menerimanya selama soal aktif.</td></tr>

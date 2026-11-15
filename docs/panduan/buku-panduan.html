@@ -133,7 +133,7 @@
     <tr><th style="width:36%">Alamat</th><th>Untuk apa</th></tr>
     <tr><td><code>lomba-rangking1.vercel.app/</code></td><td>Beranda publik: jadwal, hasil, panduan.</td></tr>
     <tr><td><code>lomba-rangking1.vercel.app/login</code></td><td>Masuk Superadmin dan Admin.</td></tr>
-    <tr><td><code>Lomba-Rangking-1.apk</code></td><td>Aplikasi Android resmi dari panitia. <b>Wajib dipasang oleh setiap peserta</b>; dibagikan panitia.</td></tr>
+    <tr><td><code>lomba-rangking1.vercel.app/unduh</code></td><td>Halaman unduh aplikasi Android (APK) beserta petunjuk pasang. <b>Wajib dipasang oleh setiap peserta</b>. Tautan langsung berkas: <code>lomba-rangking1.vercel.app/Lomba-Rangking-1.apk</code>.</td></tr>
     <tr><td><code>lomba-rangking1.vercel.app/peserta</code></td><td>Masuk peserta lewat web (cadangan; lomba tetap memakai aplikasi).</td></tr>
     <tr><td><code>lomba-rangking1.vercel.app/live/KODE</code></td><td>Monitor satu sesi. <code>KODE</code> terdiri dari 6 karakter dan tertera di halaman sesi.</td></tr>
     <tr><td><code>lomba-rangking1.vercel.app/hasil/KODE</code></td><td>Hasil resmi satu sesi (tampil setelah hasil dipublikasikan).</td></tr>
@@ -287,6 +287,7 @@
     <li>Buat akun Admin dan atur Hak Akses.</li>
     <li>Periksa penilaian di Pengaturan (100 + 50, durasi).</li>
     <li>Periksa identitas di Pengaturan Global (penyelenggara, pemilik produk).</li>
+    <li>Pastikan tautan unduh <code>lomba-rangking1.vercel.app/unduh</code> berfungsi: jalankan migrasi <code>0008_apk_bucket.sql</code>, unggah <code>Lomba-Rangking-1.apk</code> terbaru ke Supabase Storage (bucket <code>apk</code>), lalu coba unduh dari HP. Ulangi setiap ada APK baru (atau aktifkan unggah otomatis lewat secret GitHub). Disarankan menjadikan repositori GitHub <b>Private</b>.</li>
     <li>Ikut gladi resik dengan beberapa HP sungguhan.</li>
   </ul>
   <h3>Hari-H dan sesudahnya</h3>
@@ -503,7 +504,7 @@
   <h3>H-7 sampai H-1</h3>
   <ul class="checklist">
     <li>Peserta diimpor dan <b>terverifikasi</b>; kuota per kecamatan terpenuhi.</li>
-    <li>Kartu kode + PIN sudah dicetak dan dibagikan; <b>APK</b> sudah dibagikan dan terpasang di HP semua peserta.</li>
+    <li>Kartu kode + PIN sudah dicetak dan dibagikan; tautan <b>/unduh</b> sudah dibagikan dan <b>APK</b> terpasang di HP semua peserta.</li>
     <li>Soal lengkap (termasuk soal cadangan untuk seri); durasi diatur.</li>
     <li>Sesi, babak, dan soal sudah disiapkan; <b>gladi resik</b> dengan HP sungguhan sudah dilakukan.</li>
     <li><b>Setelah gladi resik: reset perangkat semua peserta</b> (Data Peserta → centang semua → <b>Reset perangkat</b>) agar tiap peserta mengunci HP yang benar pada hari lomba.</li>
@@ -534,12 +535,12 @@
     <li>Siapkan <b>HP yang baterainya penuh</b> dan terhubung internet (Wi-Fi lokasi atau paket data).</li>
     <li>Ambil <b>kartu peserta</b> dari panitia. Di kartu ada <b>Kode peserta</b> dan <b>PIN</b>. <u>Jangan beri tahu orang lain.</u></li>
     <li>Pastikan layar HP tidak mati sendiri (atur waktu layar ke paling lama) dan nonaktifkan mode hemat daya.</li>
-    <li><b>Pasang aplikasi (APK) Lomba Rangking 1</b> yang disiapkan panitia. Memasang aplikasi ini <b>wajib</b>; lomba memang bisa dibuka lewat web, tetapi peserta harus memakai aplikasi dari panitia.</li>
+    <li><b>Pasang aplikasi (APK) Lomba Rangking 1</b> dari <code>lomba-rangking1.vercel.app/unduh</code>. Memasang aplikasi ini <b>wajib</b>; lomba memang bisa dibuka lewat web, tetapi peserta harus memakai aplikasi dari panitia.</li>
   </ul>
   <h3>Memasang aplikasi (APK)</h3>
   <ol class="steps">
-    <li>Terima berkas <b>Lomba-Rangking-1.apk</b> dari panitia (jangan mengunduh dari sumber lain).</li>
-    <li>Buka berkas dari HP Android. Bila diminta, izinkan <b>“Pasang aplikasi dari sumber tidak dikenal”</b> untuk aplikasi yang membuka berkas (mis. WhatsApp atau Files).</li>
+    <li>Buka <code>lomba-rangking1.vercel.app/unduh</code> di browser HP, lalu ketuk <b>Unduh aplikasi (APK)</b>. Jangan mengunduh dari sumber lain.</li>
+    <li>Buka berkas yang terunduh (dari notifikasi atau folder <i>Download</i>). Bila diminta, izinkan <b>“Pasang aplikasi dari sumber tidak dikenal”</b> untuk aplikasi yang membuka berkas (mis. Chrome atau Files).</li>
     <li>Bila muncul peringatan keamanan (mis. Play Protect), pilih <b>Tetap pasang</b>; APK ini resmi dari panitia.</li>
     <li>Ketuk <b>Pasang</b>. Ikon <b>Lomba Rangking 1</b> muncul di layar utama. Buka dan pastikan beranda tampil.</li>
   </ol>

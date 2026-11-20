@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { CheckCircle2, Download, FileDown, Image as ImageIcon, Pencil, Plus, Trash2, Upload, X } from 'lucide-react'
+import { CheckCircle2, Download, Eye, FileDown, Image as ImageIcon, Pencil, Plus, Trash2, Upload, X } from 'lucide-react'
 import { list, listByIds, remove, rpc, update } from '@/services/db'
 import { useAuth } from '@/contexts/AuthContext'
 import { useEvent, useLevels } from '@/contexts/EventContext'
@@ -19,6 +19,7 @@ import { Switch, SwitchRow } from '@/components/ui/switch'
 import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/table'
 import { exportExcel, readExcel } from '@/utils/excel'
 import { LABELS } from '@/utils/format'
+import { QuestionPreviewDialog, type PreviewQuestion } from './QuestionPreview'
 import type { Difficulty, Question, QuestionCategory, QuestionOption, QuestionType } from '@/types'
 
 interface DraftOption { id?: string; text: string; is_correct: boolean }
@@ -88,6 +89,7 @@ function Inner({ eventId }: { eventId: string }) {
   const [cat, setCat] = useState('')
   const [level, setLevel] = useState('')
   const [draft, setDraft] = useState<Draft | null>(null)
+  const [preview, setPreview] = useState<PreviewQuestion | null>(null)
   const [importResult, setImportResult] = useState<ImportResult[] | null>(null)
 
   const bank = useQuestionBank(eventId)
@@ -102,6 +104,14 @@ function Inner({ eventId }: { eventId: string }) {
     return questions.filter((x) => (!type || x.type === type) && (!cat || x.category_id === cat) && (!level || x.education_level_id === level) && (!q || x.question_text.toLowerCase().includes(q)))
   }, [questions, search, type, cat, level])
   const paged = usePaged(filtered, 20)
+  const previewOfQuestion = (q: Question): PreviewQuestion => ({
+    type: q.type, text: q.question_text, imageUrl: q.image_url, category: q.category_id ? catMap.get(q.category_id) : null, explanation: q.explanation,
+    options: (opts.get(q.id) ?? []).map((o) => ({ text: o.option_text, isCorrect: o.is_correct })),
+  })
+  const previewOfDraft = (d: Draft): PreviewQuestion => ({
+    type: d.type, text: d.question_text, imageUrl: d.image_url, category: d.category.trim() || (d.category_id ? catMap.get(d.category_id) : null), explanation: d.explanation,
+    options: d.options.map((o) => ({ text: o.text, isCorrect: o.is_correct })),
+  })
   const keyOf = (q: Question) => (opts.get(q.id) ?? []).filter((o) => o.is_correct).map((o) => o.option_text).join(' / ')
 
   const openNew = () => setDraft({ type: 'multiple_choice', question_text: '', image_url: null, category_id: cat, category: '', education_level_id: level, difficulty: 'medium', explanation: '', case_sensitive: false, ignore_whitespace: true, is_active: true, options: defaultOptions('multiple_choice') })
@@ -199,7 +209,7 @@ function Inner({ eventId }: { eventId: string }) {
         ) : (
           <>
             <Table>
-              <THead><TR><TH>Soal</TH><TH>Tipe</TH><TH>Kategori</TH><TH>Jenjang</TH><TH>Kesulitan</TH><TH>Kunci jawaban</TH><TH>Aktif</TH>{canEdit && <TH className="w-20" />}</TR></THead>
+              <THead><TR><TH>Soal</TH><TH>Tipe</TH><TH>Kategori</TH><TH>Jenjang</TH><TH>Kesulitan</TH><TH>Kunci jawaban</TH><TH>Aktif</TH><TH className="w-12" />{canEdit && <TH className="w-20" />}</TR></THead>
               <TBody>
                 {paged.slice.map((q) => (
                   <TR key={q.id}>
@@ -210,6 +220,7 @@ function Inner({ eventId }: { eventId: string }) {
                     <TD><Badge variant={DIFF_VARIANT[q.difficulty]}>{LABELS.difficulty[q.difficulty]}</Badge></TD>
                     <TD className="max-w-[14rem]"><span className="line-clamp-1 text-emerald-700"><CheckCircle2 className="mr-1 inline h-3.5 w-3.5" />{keyOf(q) || '—'}</span></TD>
                     <TD><Switch checked={q.is_active} disabled={!canEdit} onCheckedChange={(v) => void toggleActive(q, v)} aria-label="Aktif" /></TD>
+                    <TD className="whitespace-nowrap text-right"><Button size="icon" variant="ghost" onClick={() => setPreview(previewOfQuestion(q))} aria-label="Pratinjau soal" title="Pratinjau soal"><Eye /></Button></TD>
                     {canEdit && (
                       <TD className="whitespace-nowrap text-right">
                         <Button size="icon" variant="ghost" onClick={() => openEdit(q)} aria-label="Ubah"><Pencil /></Button>
@@ -278,9 +289,11 @@ function Inner({ eventId }: { eventId: string }) {
               <Field label="Pembahasan (ditampilkan setelah jawaban dibuka)"><Textarea rows={2} value={draft.explanation} onChange={(e) => setDraft({ ...draft, explanation: e.target.value })} /></Field>
             </DialogBody>
           )}
-          <DialogFooter><Button variant="outline" onClick={() => setDraft(null)}>Batal</Button><Button loading={busy} onClick={() => void save()}>Simpan soal</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" className="mr-auto" onClick={() => draft && setPreview(previewOfDraft(draft))}><Eye /> Pratinjau</Button><Button variant="outline" onClick={() => setDraft(null)}>Batal</Button><Button loading={busy} onClick={() => void save()}>Simpan soal</Button></DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <QuestionPreviewDialog open={!!preview} onOpenChange={(o) => !o && setPreview(null)} question={preview} />
 
       <Dialog open={!!importResult} onOpenChange={(o) => !o && setImportResult(null)}>
         <DialogContent>

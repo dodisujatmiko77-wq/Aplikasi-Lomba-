@@ -9,7 +9,7 @@
 1. **Event Perlombaan** → pastikan event sudah dibuat (Superadmin).
 2. **Data Peserta** → *Template* → isi Excel (No Peserta, Nama, Sekolah, Jenjang, Kecamatan) → *Import Excel*.
    Unduh **kode & PIN** dan **cetak kartu** segera — PIN hanya tampil sekali. Lupa PIN? Gunakan ikon kunci (*Reset PIN*).
-3. **Bank Soal** → buat/impor soal. Tiga tipe: pilihan ganda, benar/salah, jawaban singkat (jawaban diterima bisa lebih dari satu).
+3. **Bank Soal** → buat/impor soal. Ikon **mata** (Pratinjau) pada tiap soal, atau tombol **Pratinjau** di formulir soal, menampilkan perkiraan tampilan soal di **HP peserta** dan di **layar utama**; centang *Tampilkan kunci jawaban* untuk melihat tampilan setelah jawaban dibuka. Tiga tipe: pilihan ganda, benar/salah, jawaban singkat (jawaban diterima bisa lebih dari satu).
 4. **Paket Soal** (opsional) → kelompokkan soal.
 5. **Pengaturan** → cek penilaian default: 100 poin + bonus kecepatan hingga 50, 20 detik.
 6. **Sesi Kompetisi** → *Sesi baru* per jenjang → **Atur**:

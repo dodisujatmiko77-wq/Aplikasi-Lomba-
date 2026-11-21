@@ -21,6 +21,18 @@ import { cn } from '@/lib/utils'
 import { fmtPoints, fmtSeconds, LABELS } from '@/utils/format'
 import type { ControlState, LeaderboardRow } from '@/types'
 
+/** Tombol aksi operator. Harus didefinisikan di luar komponen halaman: bila dibuat di dalamnya, tombol dibuang dan dibuat ulang
+ *  pada setiap render (hitungan mundur memicu render ±10×/detik) sehingga klik yang butuh >100 ms tidak pernah sampai. */
+function ActBtn({ can, busyKey, act, k, icon: Icon, label, fn, ok, variant = 'default', disabled = false, size = 'lg' }: {
+  can: boolean; busyKey: string | null; act: (key: string, fn: () => Promise<unknown>, ok?: string) => Promise<unknown>
+  k: string; icon: typeof Play; label: string; fn: () => Promise<unknown> | void; ok?: string
+  variant?: 'default' | 'accent' | 'flame' | 'outline' | 'destructive'; disabled?: boolean; size?: 'lg' | 'default'
+}) {
+  return (
+    <Button size={size} variant={variant} disabled={!can || disabled} loading={busyKey === k} onClick={() => void act(k, async () => fn(), ok)}><Icon /> {label}</Button>
+  )
+}
+
 export default function ControlPanelPage() {
   const { id = '' } = useParams()
   const confirm = useConfirm()
@@ -89,9 +101,6 @@ export default function ControlPanelPage() {
     if (ok) setTie(null)
   }
 
-  const Btn = ({ k, icon: Icon, label, fn, ok, variant = 'default', disabled = false, size = 'lg' }: { k: string; icon: typeof Play; label: string; fn: () => Promise<unknown> | void; ok?: string; variant?: 'default' | 'accent' | 'flame' | 'outline' | 'destructive'; disabled?: boolean; size?: 'lg' | 'default' }) => (
-    <Button size={size} variant={variant} disabled={!can || disabled} loading={busyKey === k} onClick={() => void act(k, async () => fn(), ok)}><Icon /> {label}</Button>
-  )
 
   return (
     <div>
@@ -156,27 +165,27 @@ export default function ControlPanelPage() {
 
               {/* tombol aksi sesuai status */}
               <div className="flex flex-wrap gap-2">
-                {st === 'draft' && <Btn k="open" icon={PlayCircle} label="Buka sesi untuk peserta" variant="accent" fn={call('open_session')} ok="Sesi dibuka" />}
+                {st === 'draft' && <ActBtn can={can} busyKey={busyKey} act={act} k="open" icon={PlayCircle} label="Buka sesi untuk peserta" variant="accent" fn={call('open_session')} ok="Sesi dibuka" />}
                 {(st === 'open' || (st === 'running' && !hasActiveRound)) && nextRound && (
-                  <Btn k="startRound" icon={Flag} label={`Mulai ${nextRound.name}`} variant="accent" fn={() => rpc('start_round', { p_round_id: nextRound.id })} ok="Babak dimulai" />
+                  <ActBtn can={can} busyKey={busyKey} act={act} k="startRound" icon={Flag} label={`Mulai ${nextRound.name}`} variant="accent" fn={() => rpc('start_round', { p_round_id: nextRound.id })} ok="Babak dimulai" />
                 )}
                 {st === 'running' && hasActiveRound && !isActive && qStatus !== 'closed' && nextPending && (
-                  <Btn k="next" icon={SkipForward} label={cq ? 'Soal berikutnya' : 'Tayangkan soal pertama'} variant="accent" fn={call('next_question')} />
+                  <ActBtn can={can} busyKey={busyKey} act={act} k="next" icon={SkipForward} label={cq ? 'Soal berikutnya' : 'Tayangkan soal pertama'} variant="accent" fn={call('next_question')} />
                 )}
-                {st === 'running' && isActive && <Btn k="close" icon={XCircle} label="Tutup soal" variant="flame" fn={call('close_question')} ok="Soal ditutup" />}
-                {st === 'running' && qStatus === 'closed' && <Btn k="reveal" icon={Eye} label="Tampilkan jawaban benar" variant="accent" fn={call('reveal_answer')} />}
-                {st === 'running' && qStatus === 'revealed' && <Btn k="lb" icon={ListOrdered} label="Tampilkan leaderboard" variant="outline" fn={call('set_display', { p_screen: 'leaderboard' })} />}
-                {st === 'running' && qStatus === 'closed' || st === 'running' && qStatus === 'revealed' ? <Btn k="back" icon={Eye} label="Layar soal/hasil" variant="outline" size="default" fn={call('set_display', { p_screen: qStatus === 'revealed' ? 'result' : 'question' })} /> : null}
-                {st === 'running' && hasActiveRound && !isActive && !pending && <Btn k="endRound" icon={Flag} label="Akhiri babak" variant="flame" fn={call('end_round')} ok="Babak diakhiri" />}
-                {st === 'running' && hasActiveRound && !isActive && !!pending && qStatus !== 'closed' && cq && <Btn k="endRound2" icon={Flag} label="Akhiri babak sekarang" variant="outline" size="default" fn={call('end_round')} />}
+                {st === 'running' && isActive && <ActBtn can={can} busyKey={busyKey} act={act} k="close" icon={XCircle} label="Tutup soal" variant="flame" fn={call('close_question')} ok="Soal ditutup" />}
+                {st === 'running' && qStatus === 'closed' && <ActBtn can={can} busyKey={busyKey} act={act} k="reveal" icon={Eye} label="Tampilkan jawaban benar" variant="accent" fn={call('reveal_answer')} />}
+                {st === 'running' && qStatus === 'revealed' && <ActBtn can={can} busyKey={busyKey} act={act} k="lb" icon={ListOrdered} label="Tampilkan leaderboard" variant="outline" fn={call('set_display', { p_screen: 'leaderboard' })} />}
+                {st === 'running' && qStatus === 'closed' || st === 'running' && qStatus === 'revealed' ? <ActBtn can={can} busyKey={busyKey} act={act} k="back" icon={Eye} label="Layar soal/hasil" variant="outline" size="default" fn={call('set_display', { p_screen: qStatus === 'revealed' ? 'result' : 'question' })} /> : null}
+                {st === 'running' && hasActiveRound && !isActive && !pending && <ActBtn can={can} busyKey={busyKey} act={act} k="endRound" icon={Flag} label="Akhiri babak" variant="flame" fn={call('end_round')} ok="Babak diakhiri" />}
+                {st === 'running' && hasActiveRound && !isActive && !!pending && qStatus !== 'closed' && cq && <ActBtn can={can} busyKey={busyKey} act={act} k="endRound2" icon={Flag} label="Akhiri babak sekarang" variant="outline" size="default" fn={call('end_round')} />}
                 {(st === 'running' || st === 'paused') && (isActive || st === 'paused') && (st === 'running'
-                  ? <Btn k="pause" icon={Pause} label="Jeda" variant="outline" fn={call('pause_session')} ok="Lomba dijeda" />
-                  : <Btn k="resume" icon={Play} label="Lanjutkan" variant="accent" fn={call('resume_session')} ok="Lomba dilanjutkan" />)}
+                  ? <ActBtn can={can} busyKey={busyKey} act={act} k="pause" icon={Pause} label="Jeda" variant="outline" fn={call('pause_session')} ok="Lomba dijeda" />
+                  : <ActBtn can={can} busyKey={busyKey} act={act} k="resume" icon={Play} label="Lanjutkan" variant="accent" fn={call('resume_session')} ok="Lomba dilanjutkan" />)}
                 {st === 'running' && !!cq && ['active', 'closed', 'revealed'].includes(qStatus ?? '') && <Button size="lg" variant="outline" className="text-red-600" disabled={!can} onClick={() => void cancelQ()}><Ban /> Batalkan soal</Button>}
                 {(st === 'running') && roundsDone && (
                   <>
                     <Button size="lg" variant="outline" disabled={!can} onClick={() => setTie({ ids: tiedRows.map((r) => r.participant_id), qs: [], name: '' })}><Users /> Soal tambahan (seri)</Button>
-                    <Btn k="announce" icon={Trophy} label="Umumkan pemenang" variant="flame" fn={announce} />
+                    <ActBtn can={can} busyKey={busyKey} act={act} k="announce" icon={Trophy} label="Umumkan pemenang" variant="flame" fn={announce} />
                   </>
                 )}
               </div>

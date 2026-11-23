@@ -53,6 +53,9 @@ export interface CertificateInfo {
   date: string
   signerName?: string
   signerTitle?: string
+  /** penanda tangan kedua (kiri, "Mengetahui"), mis. Ketua PGRI Kabupaten Way Kanan */
+  chairName?: string
+  chairTitle?: string
   /** logo aplikasi (kiri atas), path publik */
   appLogoUrl?: string | null
   /** logo penyelenggara/event (kanan atas), opsional */
@@ -151,10 +154,18 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     doc.text(info.signerTitle || 'Ketua Panitia', W - 70, 164, { align: 'center' })
     doc.setFont('helvetica', 'bold')
     doc.text(info.signerName || '( ................................ )', W - 70, 186, { align: 'center' })
+    // penanda tangan kedua (kiri)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(11)
+    doc.setTextColor(60, 70, 90)
+    doc.text('Mengetahui,', 70, 158, { align: 'center' })
+    doc.text(info.chairTitle || 'Ketua PGRI Kabupaten Way Kanan', 70, 164, { align: 'center', maxWidth: 90 })
+    doc.setFont('helvetica', 'bold')
+    doc.text(info.chairName || '( ................................ )', 70, 186, { align: 'center' })
     doc.setFont('helvetica', 'italic')
     doc.setFontSize(9)
     doc.setTextColor(130, 140, 155)
-    doc.text('"Siapa Cepat, Siapa Tepat, Dialah Juara!"', 26, 186)
+    doc.text('"Siapa Cepat, Siapa Tepat, Dialah Juara!"', W / 2, 191, { align: 'center' })
   })
   doc.save(filename.endsWith('.pdf') ? filename : `${filename}.pdf`)
 }

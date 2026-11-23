@@ -23,6 +23,7 @@ function Inner({ eventId }: { eventId: string }) {
   const [sid, setSid] = useState('')
   const [roundId, setRoundId] = useState('')
   const [signer, setSigner] = useState({ name: '', title: 'Ketua Panitia' })
+  const [chair, setChair] = useState({ name: '', title: 'Ketua PGRI Kabupaten Way Kanan' })
   const { busyKey, run } = useAction()
   const sessionId = sid || sessions.data?.find((s) => s.status === 'finished')?.id || sessions.data?.[0]?.id || ''
   const report = useSessionReport(sessionId, roundId)
@@ -32,7 +33,7 @@ function Inner({ eventId }: { eventId: string }) {
 
   if (sessions.isLoading) return <Loading />
   const need = () => { if (!rep || !rows.length) { toast.error('Belum ada data hasil untuk laporan ini'); return false } return true }
-  const info = () => ({ eventName: rep!.session.event_name, sessionName: rep!.session.name, organizer: rep!.session.organizer ?? 'Panitia', location: rep!.session.location, date: fmtDate(rep!.session.finished_at ?? new Date().toISOString()), signerName: signer.name || undefined, appLogoUrl: '/logo.png', organizerLogoUrl: event?.logo_url ?? null, signerTitle: signer.title })
+  const info = () => ({ eventName: rep!.session.event_name, sessionName: rep!.session.name, organizer: rep!.session.organizer ?? 'Panitia', location: rep!.session.location, date: fmtDate(rep!.session.finished_at ?? new Date().toISOString()), signerName: signer.name || undefined, appLogoUrl: '/logo.png', organizerLogoUrl: event?.logo_url ?? null, chairName: chair.name || undefined, chairTitle: chair.title || undefined, signerTitle: signer.title })
   const base = () => `${rep!.session.name}${roundId ? '-' + (rep!.rounds.find((r) => r.id === roundId)?.name ?? '') : ''}`
   const sub = () => `${rep!.session.event_name} · ${rep!.session.level}`
 
@@ -74,7 +75,8 @@ function Inner({ eventId }: { eventId: string }) {
         <Card className="md:col-span-2 xl:col-span-3">
           <CardHeader><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-flame-500 text-white"><Award className="h-5 w-5" /></span><CardTitle>Sertifikat</CardTitle></div><CardDescription>Piagam untuk juara 1–3 dan juara harapan 1–3 (peringkat 4–6), sertifikat untuk peserta lain. Memuat logo aplikasi dan logo penyelenggara (bila diunggah di Event). A4 lanskap, PDF.</CardDescription></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-3 sm:grid-cols-2"><Field label="Nama penandatangan"><Input value={signer.name} onChange={(e) => setSigner({ ...signer, name: e.target.value })} placeholder="Nama Kepala Sekolah / Ketua Panitia" /></Field><Field label="Jabatan"><Input value={signer.title} onChange={(e) => setSigner({ ...signer, title: e.target.value })} /></Field></div>
+            <div className="grid gap-3 sm:grid-cols-2"><Field label="Penanda tangan kiri (Mengetahui) — nama"><Input value={chair.name} onChange={(e) => setChair({ ...chair, name: e.target.value })} placeholder="Nama Ketua PGRI Kabupaten Way Kanan" /></Field><Field label="Jabatan (kiri)"><Input value={chair.title} onChange={(e) => setChair({ ...chair, title: e.target.value })} /></Field></div>
+            <div className="grid gap-3 sm:grid-cols-2"><Field label="Penanda tangan kanan — nama"><Input value={signer.name} onChange={(e) => setSigner({ ...signer, name: e.target.value })} placeholder="Nama Kepala Sekolah / Ketua Panitia" /></Field><Field label="Jabatan (kanan)"><Input value={signer.title} onChange={(e) => setSigner({ ...signer, title: e.target.value })} /></Field></div>
             <div className="flex flex-wrap gap-2">
               <Button variant="flame" disabled={!rep} loading={busyKey === 'cw'} onClick={() => void run(async () => { if (need()) await exportCertificates(rows.filter((r) => r.rank <= AWARD_MAX_RANK && !r.is_eliminated), info(), `piagam-juara-${base()}`) }, undefined, 'cw')}><Award /> Piagam juara 1–3 &amp; harapan 1–3</Button>
               <Button variant="outline" disabled={!rep} loading={busyKey === 'ca'} onClick={() => void run(async () => { if (need()) await exportCertificates(rows, info(), `sertifikat-semua-peserta-${base()}`) }, undefined, 'ca')}><Award /> Sertifikat semua peserta ({rows.length})</Button>

@@ -37,7 +37,7 @@ function Inner({ eventId }: { eventId: string }) {
 
   if (sessions.isLoading) return <Loading />
   const need = () => { if (!rep || !rows.length) { toast.error('Belum ada data hasil untuk laporan ini'); return false } return true }
-  const info = () => ({ eventName: rep!.session.event_name, sessionName: rep!.session.name, organizer: rep!.session.organizer ?? 'Panitia', location: place.trim() || null, levelCode: levelCodeOf(rep!.session.level), issuedAt: new Date(rep!.session.finished_at ?? Date.now()), date: fmtDate(rep!.session.finished_at ?? new Date().toISOString()), signerName: signer.name || undefined, appLogoUrl: '/logo.png', organizerLogoUrl: event?.logo_url ?? null, chairName: chair.name || undefined, chairTitle: chair.title || undefined, chairIdLine: chair.idLine.trim() ? `NPA. ${chair.idLine.trim().replace(/^NPA\.?\s*/i, '')}` : undefined, signerIdLine: signer.idLine.trim() ? `NIP. ${signer.idLine.trim().replace(/^NIP\.?\s*/i, '')}` : undefined, chairSign: chair.sign, chairStamp: chair.stamp, signerSign: signer.sign, signerStamp: signer.stamp, imagesOn: imgOn, signerTitle: signer.title })
+  const info = () => ({ eventName: rep!.session.event_name, sessionName: rep!.session.name, organizer: rep!.session.organizer ?? 'Panitia', location: place.trim() || null, levelCode: levelCodeOf(rep!.session.level), issuedAt: new Date(rep!.session.finished_at ?? Date.now()), date: fmtDate(rep!.session.finished_at ?? new Date().toISOString()), signerName: signer.name || undefined, appLogoUrl: '/logo.png', organizerLogoUrl: event?.logo_url ?? null, chairName: chair.name || undefined, chairTitle: chair.title || undefined, chairIdLine: chair.idLine.trim() ? `NPA. ${chair.idLine.trim().replace(/^(NPA|NIP)\.?\s*/i, '')}` : undefined, signerIdLine: signer.idLine.trim() ? `NPA. ${signer.idLine.trim().replace(/^(NPA|NIP)\.?\s*/i, '')}` : undefined, chairSign: chair.sign, chairStamp: chair.stamp, signerSign: signer.sign, signerStamp: signer.stamp, imagesOn: imgOn, signerTitle: signer.title })
   const base = () => `${rep!.session.name}${roundId ? '-' + (rep!.rounds.find((r) => r.id === roundId)?.name ?? '') : ''}`
   const sub = () => `${rep!.session.event_name} · ${rep!.session.level}`
 
@@ -81,7 +81,7 @@ function Inner({ eventId }: { eventId: string }) {
           <CardContent className="space-y-4">
             <div className="grid gap-3 sm:grid-cols-3"><Field label="Tempat penandatanganan"><Input value={place} onChange={(e) => setPlace(e.target.value)} placeholder="Baradatu" /></Field></div>
             <SignerFields heading="Penanda tangan kiri (Mengetahui)" value={chair} onChange={setChair} namePlaceholder="Nama Ketua PGRI Kabupaten Way Kanan" idLabel="NPA PGRI" />
-            <SignerFields heading="Penanda tangan kanan" value={signer} onChange={setSigner} namePlaceholder="Nama Ketua Panitia" idLabel="NIP" />
+            <SignerFields heading="Penanda tangan kanan" value={signer} onChange={setSigner} namePlaceholder="Nama Ketua Panitia" idLabel="NPA PGRI" />
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               <span className="font-medium text-navy-900">Cetak gambar tanda tangan &amp; stempel pada:</span>
               <label className="flex items-center gap-2"><Checkbox checked={imgOn.winner} onCheckedChange={(v) => setImgOn({ ...imgOn, winner: !!v })} /> Piagam juara &amp; harapan</label>

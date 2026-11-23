@@ -56,6 +56,16 @@ export interface CertificateInfo {
   /** penanda tangan kedua (kiri, "Mengetahui"), mis. Ketua PGRI Kabupaten Way Kanan */
   chairName?: string
   chairTitle?: string
+  /** baris di bawah nama, mis. "NPA. 12345" / "NIP. 1980..." */
+  chairIdLine?: string
+  signerIdLine?: string
+  /** gambar tanda tangan & stempel (data URL PNG transparan) */
+  chairSign?: string | null
+  chairStamp?: string | null
+  signerSign?: string | null
+  signerStamp?: string | null
+  /** cetak gambar tanda tangan/stempel pada piagam juara dan/atau sertifikat peserta */
+  imagesOn?: { winner: boolean; participant: boolean }
   /** logo aplikasi (kiri atas), path publik */
   appLogoUrl?: string | null
   /** logo penyelenggara/event (kanan atas), opsional */
@@ -109,6 +119,7 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     loadImage('/piagam/hut-pgri-81.png'), loadImage('/piagam/hgn-2026.png'), loadImage('/piagam/ramah.png'),
     loadImage('/piagam/pendidikan-bermutu.png'), loadImage('/piagam/guru-hebat.png'),
   ])
+  const [cSign, cStamp, sSign, sStamp] = await Promise.all([loadImage(info.chairSign), loadImage(info.chairStamp), loadImage(info.signerSign), loadImage(info.signerStamp)])
   const when = info.issuedAt ?? new Date()
   const levelCode = info.levelCode || 'UMUM'
   type Img = NonNullable<typeof appLogo>
@@ -175,6 +186,23 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     doc.text(`${info.eventName} — ${info.sessionName}`, W / 2, 135, { align: 'center', maxWidth: W - 60 })
     doc.setFontSize(10.5)
     doc.text(`Peringkat ${r.rank} · ${Number(r.points).toLocaleString('id-ID')} poin · ${r.correct} jawaban benar`, W / 2, 142.5, { align: 'center' })
+    // gambar stempel (di bawah) lalu tanda tangan (di atas), di antara jabatan dan nama
+    const showImg = winner ? info.imagesOn?.winner ?? true : info.imagesOn?.participant ?? true
+    if (showImg) {
+      const place = (cx: number, stamp: Img | null, sign: Img | null) => {
+        if (stamp) {
+          const f = fit(stamp, 21, 21)
+          // stempel sedikit transparan, menimpa sisi kiri tanda tangan seperti cap basah
+          doc.saveGraphicsState()
+          doc.setGState(doc.GState({ opacity: 0.8 }))
+          doc.addImage(stamp.data, stamp.fmt, cx - 22 - f.w / 2, 165.5 + (21 - f.h) / 2, f.w, f.h, stamp.alias, 'FAST')
+          doc.restoreGraphicsState()
+        }
+        if (sign) { const f = fit(sign, 44, 17); doc.addImage(sign.data, sign.fmt, cx - f.w / 2, 166.5 + (17 - f.h) / 2, f.w, f.h, sign.alias, 'FAST') }
+      }
+      place(70, cStamp, cSign)
+      place(W - 70, sStamp, sSign)
+    }
     // tanda tangan
     doc.setFontSize(11)
     doc.text(`${info.location ? info.location + ', ' : ''}${info.date}`, W - 70, 158, { align: 'center' })
@@ -189,6 +217,10 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     doc.text(info.chairTitle || 'Ketua PGRI Kabupaten Way Kanan', 70, 164, { align: 'center', maxWidth: 90 })
     doc.setFont('helvetica', 'bold')
     doc.text(info.chairName || '( ................................ )', 70, 186, { align: 'center' })
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9.5)
+    if (info.chairIdLine) doc.text(info.chairIdLine, 70, 190.5, { align: 'center' })
+    if (info.signerIdLine) doc.text(info.signerIdLine, W - 70, 190.5, { align: 'center' })
     // logo kaki (tengah, di antara tanda tangan)
     logoRow([{ img: ramah, maxW: 28 }, { img: bermutu, maxW: 40 }, { img: orgLogo, maxW: 16 }], W / 2, 165, 13, 'center', 5)
     logoRow([{ img: hebat, maxW: 72 }], W / 2, 182.5, 5, 'center')

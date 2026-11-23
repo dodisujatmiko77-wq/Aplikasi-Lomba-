@@ -11,7 +11,7 @@ import { Field } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { SimpleSelect } from '@/components/ui/select'
 import { exportExcel } from '@/utils/excel'
-import { AWARD_MAX_RANK, exportCertificates, exportTablePdf } from '@/utils/pdf'
+import { AWARD_MAX_RANK, exportCertificates, exportTablePdf, levelCodeOf } from '@/utils/pdf'
 import { useEvent } from '@/contexts/EventContext'
 import { fmtDate } from '@/utils/format'
 import type { AnswerHistoryRow } from '@/types'
@@ -24,6 +24,7 @@ function Inner({ eventId }: { eventId: string }) {
   const [roundId, setRoundId] = useState('')
   const [signer, setSigner] = useState({ name: '', title: 'Ketua Panitia' })
   const [chair, setChair] = useState({ name: '', title: 'Ketua PGRI Kabupaten Way Kanan' })
+  const [place, setPlace] = useState('Baradatu')
   const { busyKey, run } = useAction()
   const sessionId = sid || sessions.data?.find((s) => s.status === 'finished')?.id || sessions.data?.[0]?.id || ''
   const report = useSessionReport(sessionId, roundId)
@@ -33,7 +34,7 @@ function Inner({ eventId }: { eventId: string }) {
 
   if (sessions.isLoading) return <Loading />
   const need = () => { if (!rep || !rows.length) { toast.error('Belum ada data hasil untuk laporan ini'); return false } return true }
-  const info = () => ({ eventName: rep!.session.event_name, sessionName: rep!.session.name, organizer: rep!.session.organizer ?? 'Panitia', location: rep!.session.location, date: fmtDate(rep!.session.finished_at ?? new Date().toISOString()), signerName: signer.name || undefined, appLogoUrl: '/logo.png', organizerLogoUrl: event?.logo_url ?? null, chairName: chair.name || undefined, chairTitle: chair.title || undefined, signerTitle: signer.title })
+  const info = () => ({ eventName: rep!.session.event_name, sessionName: rep!.session.name, organizer: rep!.session.organizer ?? 'Panitia', location: place.trim() || null, levelCode: levelCodeOf(rep!.session.level), issuedAt: new Date(rep!.session.finished_at ?? Date.now()), date: fmtDate(rep!.session.finished_at ?? new Date().toISOString()), signerName: signer.name || undefined, appLogoUrl: '/logo.png', organizerLogoUrl: event?.logo_url ?? null, chairName: chair.name || undefined, chairTitle: chair.title || undefined, signerTitle: signer.title })
   const base = () => `${rep!.session.name}${roundId ? '-' + (rep!.rounds.find((r) => r.id === roundId)?.name ?? '') : ''}`
   const sub = () => `${rep!.session.event_name} · ${rep!.session.level}`
 
@@ -75,6 +76,7 @@ function Inner({ eventId }: { eventId: string }) {
         <Card className="md:col-span-2 xl:col-span-3">
           <CardHeader><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-flame-500 text-white"><Award className="h-5 w-5" /></span><CardTitle>Sertifikat</CardTitle></div><CardDescription>Piagam untuk juara 1–3 dan juara harapan 1–3 (peringkat 4–6), sertifikat untuk peserta lain. Memuat logo aplikasi dan logo penyelenggara (bila diunggah di Event). A4 lanskap, PDF.</CardDescription></CardHeader>
           <CardContent className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-3"><Field label="Tempat penandatanganan"><Input value={place} onChange={(e) => setPlace(e.target.value)} placeholder="Baradatu" /></Field></div>
             <div className="grid gap-3 sm:grid-cols-2"><Field label="Penanda tangan kiri (Mengetahui) — nama"><Input value={chair.name} onChange={(e) => setChair({ ...chair, name: e.target.value })} placeholder="Nama Ketua PGRI Kabupaten Way Kanan" /></Field><Field label="Jabatan (kiri)"><Input value={chair.title} onChange={(e) => setChair({ ...chair, title: e.target.value })} /></Field></div>
             <div className="grid gap-3 sm:grid-cols-2"><Field label="Penanda tangan kanan — nama"><Input value={signer.name} onChange={(e) => setSigner({ ...signer, name: e.target.value })} placeholder="Nama Kepala Sekolah / Ketua Panitia" /></Field><Field label="Jabatan (kanan)"><Input value={signer.title} onChange={(e) => setSigner({ ...signer, title: e.target.value })} /></Field></div>
             <div className="flex flex-wrap gap-2">

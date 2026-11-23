@@ -60,13 +60,27 @@ export interface CertificateInfo {
   appLogoUrl?: string | null
   /** logo penyelenggara/event (kanan atas), opsional */
   organizerLogoUrl?: string | null
+  /** kode jenjang sesi untuk nomor piagam, mis. SD / SMP / SMA-SMK */
+  levelCode?: string
+  /** tanggal terbit (bulan Romawi & tahun pada nomor piagam) */
+  issuedAt?: Date
 }
+
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
+/** Nomor piagam: <no urut dari no peserta>/PIAGAM/LR1/<jenjang>/PGRI-WK/<bulan Romawi>/<tahun> */
+export function certificateNumber(participantNumber: string | null | undefined, rank: number, kind: 'PIAGAM' | 'SERTIFIKAT', levelCode: string, when: Date) {
+  const digits = (participantNumber ?? '').match(/(\d+)(?!.*\d)/)?.[1]
+  const seq = (digits ?? String(rank)).padStart(3, '0')
+  return `${seq}/${kind}/LR1/${levelCode}/PGRI-WK/${ROMAN[when.getMonth()]}/${when.getFullYear()}`
+}
+/** Kode jenjang untuk nomor: nama jenjang tanpa garis miring (SMA/SMK → SMA-SMK). */
+export const levelCodeOf = (level: string | null | undefined) => (level ?? '').trim().toUpperCase().replace(/\s*\/\s*/g, '-') || 'UMUM'
 
 const RANK_TITLE: Record<number, string> = { 1: 'JUARA 1', 2: 'JUARA 2', 3: 'JUARA 3', 4: 'JUARA HARAPAN 1', 5: 'JUARA HARAPAN 2', 6: 'JUARA HARAPAN 3' }
 /** Peringkat yang mendapat piagam (juara 1–3 dan juara harapan 1–3). */
 export const AWARD_MAX_RANK = 6
 
-async function loadImage(url?: string | null): Promise<{ data: string; w: number; h: number; fmt: 'PNG' | 'JPEG' | 'WEBP' } | null> {
+async function loadImage(url?: string | null): Promise<{ data: string; w: number; h: number; fmt: 'PNG' | 'JPEG' | 'WEBP'; alias: string } | null> {
   if (!url) return null
   try {
     const res = await fetch(url, { mode: 'cors' })
@@ -78,7 +92,7 @@ async function loadImage(url?: string | null): Promise<{ data: string; w: number
     const size = await new Promise<{ w: number; h: number } | null>((resolve) => { const i = new Image(); i.onload = () => resolve({ w: i.naturalWidth, h: i.naturalHeight }); i.onerror = () => resolve(null); i.src = data })
     if (!size) return null
     const fmt = data.startsWith('data:image/png') ? 'PNG' : data.startsWith('data:image/webp') ? 'WEBP' : 'JPEG'
-    return { data, ...size, fmt }
+    return { data, ...size, fmt, alias: 'img-' + url.replace(/[^a-z0-9]/gi, '').slice(-40) }
   } catch {
     return null
   }
@@ -90,11 +104,21 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
   const doc = new JsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
   const W = 297
   const H = 210
-  const [appLogo, orgLogo] = await Promise.all([loadImage(info.appLogoUrl), loadImage(info.organizerLogoUrl)])
-  const drawLogo = (img: NonNullable<typeof appLogo>, x: number, y: number, maxW: number, maxH: number, align: 'left' | 'right') => {
-    const s = Math.min(maxW / img.w, maxH / img.h)
-    const w = img.w * s, h = img.h * s
-    doc.addImage(img.data, img.fmt, align === 'left' ? x : x - w, y + (maxH - h) / 2, w, h)
+  const [appLogo, orgLogo, hut, hgn, ramah, bermutu, hebat] = await Promise.all([
+    loadImage(info.appLogoUrl), loadImage(info.organizerLogoUrl),
+    loadImage('/piagam/hut-pgri-81.png'), loadImage('/piagam/hgn-2026.png'), loadImage('/piagam/ramah.png'),
+    loadImage('/piagam/pendidikan-bermutu.png'), loadImage('/piagam/guru-hebat.png'),
+  ])
+  const when = info.issuedAt ?? new Date()
+  const levelCode = info.levelCode || 'UMUM'
+  type Img = NonNullable<typeof appLogo>
+  const fit = (img: Img, maxW: number, maxH: number) => { const s = Math.min(maxW / img.w, maxH / img.h); return { w: img.w * s, h: img.h * s } }
+  /** Satu baris logo: rata kiri / kanan / tengah, dipusatkan vertikal pada tinggi `h`. */
+  const logoRow = (items: { img: Img | null; maxW: number }[], x: number, y: number, h: number, align: 'left' | 'right' | 'center', gap = 3.5) => {
+    const list = items.filter((i): i is { img: Img; maxW: number } => !!i.img).map((i) => ({ img: i.img, ...fit(i.img, i.maxW, h) }))
+    const total = list.reduce((a, b) => a + b.w, 0) + gap * Math.max(0, list.length - 1)
+    let cx = align === 'left' ? x : align === 'right' ? x - total : x - total / 2
+    for (const it of list) { doc.addImage(it.img.data, it.img.fmt, cx, y + (h - it.h) / 2, it.w, it.h, it.img.alias, 'FAST'); cx += it.w + gap }
   }
   rows.forEach((r, i) => {
     if (i > 0) doc.addPage()
@@ -110,9 +134,9 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     doc.roundedRect(13, 13, W - 26, H - 26, 2, 2, 'S')
     doc.setLineWidth(0.3)
     doc.roundedRect(15.5, 15.5, W - 31, H - 31, 1.5, 1.5, 'S')
-    // logo
-    if (appLogo) drawLogo(appLogo, 22, 19, 36, 26, 'left')
-    if (orgLogo) drawLogo(orgLogo, W - 22, 19, 36, 26, 'right')
+    // logo kepala: kiri HUT PGRI + Lomba Rangking 1, kanan Hari Guru Nasional
+    logoRow([{ img: hut, maxW: 20 }, { img: appLogo, maxW: 32 }], 22, 19, 25, 'left')
+    logoRow([{ img: hgn, maxW: 54 }], W - 22, 21, 21, 'right')
     // kepala
     doc.setTextColor(11, 27, 63)
     doc.setFont('helvetica', 'bold')
@@ -121,9 +145,12 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     doc.setFontSize(34)
     doc.text(winner ? 'PIAGAM PENGHARGAAN' : 'SERTIFIKAT', W / 2, 50, { align: 'center' })
     doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10.5)
+    doc.setTextColor(60, 70, 90)
+    doc.text(`Nomor: ${certificateNumber(r.number, r.rank, winner ? 'PIAGAM' : 'SERTIFIKAT', levelCode, when)}`, W / 2, 57.5, { align: 'center' })
     doc.setFontSize(12)
     doc.setTextColor(90, 100, 120)
-    doc.text('diberikan kepada', W / 2, 64, { align: 'center' })
+    doc.text('diberikan kepada', W / 2, 65, { align: 'center' })
     // nama
     doc.setTextColor(11, 27, 63)
     doc.setFont('times', 'bolditalic')
@@ -162,10 +189,13 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     doc.text(info.chairTitle || 'Ketua PGRI Kabupaten Way Kanan', 70, 164, { align: 'center', maxWidth: 90 })
     doc.setFont('helvetica', 'bold')
     doc.text(info.chairName || '( ................................ )', 70, 186, { align: 'center' })
+    // logo kaki (tengah, di antara tanda tangan)
+    logoRow([{ img: ramah, maxW: 28 }, { img: bermutu, maxW: 40 }, { img: orgLogo, maxW: 16 }], W / 2, 165, 13, 'center', 5)
+    logoRow([{ img: hebat, maxW: 72 }], W / 2, 182.5, 5, 'center')
     doc.setFont('helvetica', 'italic')
-    doc.setFontSize(9)
+    doc.setFontSize(7.5)
     doc.setTextColor(130, 140, 155)
-    doc.text('"Siapa Cepat, Siapa Tepat, Dialah Juara!"', W / 2, 191, { align: 'center' })
+    doc.text('"Siapa Cepat, Siapa Tepat, Dialah Juara!"', W / 2, 192.3, { align: 'center' })
   })
   doc.save(filename.endsWith('.pdf') ? filename : `${filename}.pdf`)
 }

@@ -15,7 +15,7 @@ import { AWARD_MAX_RANK, exportCertificates, exportTablePdf } from '@/utils/pdf'
 import { useEvent } from '@/contexts/EventContext'
 import { fmtDate } from '@/utils/format'
 import type { AnswerHistoryRow } from '@/types'
-import { historyColumns, historyRows, rankingColumns, rankingPdfBody, rankingPdfHead, rankingRows, recap, useEventSessions, useSessionReport } from './reportData'
+import { awardLabel, historyColumns, historyRows, rankingColumns, rankingPdfBody, rankingPdfHead, rankingRows, recap, useEventSessions, useSessionReport } from './reportData'
 
 function Inner({ eventId }: { eventId: string }) {
   const sessions = useEventSessions(eventId)
@@ -43,9 +43,9 @@ function Inner({ eventId }: { eventId: string }) {
       { label: 'PDF', fn: () => need() && exportTablePdf({ filename: `ranking-${base()}`, title: `Ranking ${base()}`, subtitle: sub(), head: rankingPdfHead, body: rankingPdfBody(rows, fin), landscape: true }) },
       { label: 'Cetak', fn: () => { if (need()) window.open(`/admin/results?session=${sessionId}`, '_blank') } },
     ] },
-    { key: 'win', icon: Award, title: 'Daftar juara 1, 2, dan 3', desc: 'Hanya tiga besar, siap ditempel atau dilampirkan pada berita acara.', actions: [
-      { label: 'PDF', fn: () => need() && exportTablePdf({ filename: `juara-${base()}`, title: `Juara ${base()}`, subtitle: sub(), head: ['Juara', 'Nama', 'Sekolah', 'Kecamatan', 'Poin'], body: rows.slice(0, 3).map((r) => [r.rank, r.name, r.school, r.district, Number(r.points).toLocaleString('id-ID')]) }) },
-      { label: 'Excel', fn: () => need() && exportExcel(`juara-${base()}`, [{ name: 'Juara', columns: rankingColumns, rows: rankingRows(rows.slice(0, 3)) }]) },
+    { key: 'win', icon: Award, title: 'Daftar juara dan juara harapan', desc: 'Juara 1–3 dan juara harapan 1–3, siap ditempel atau dilampirkan pada berita acara.', actions: [
+      { label: 'PDF', fn: () => need() && exportTablePdf({ filename: `juara-${base()}`, title: `Juara ${base()}`, subtitle: sub(), head: ['Predikat', 'Nama', 'Sekolah', 'Kecamatan', 'Poin'], body: rows.filter((r) => !r.is_eliminated).slice(0, 6).map((r) => [awardLabel(r.rank) ?? r.rank, r.name, r.school, r.district, Number(r.points).toLocaleString('id-ID')]) }) },
+      { label: 'Excel', fn: () => need() && exportExcel(`juara-${base()}`, [{ name: 'Juara', columns: rankingColumns, rows: rankingRows(rows.filter((r) => !r.is_eliminated).slice(0, 6)) }]) },
     ] },
     { key: 'hist', icon: History, title: 'Riwayat jawaban per soal', desc: 'Setiap jawaban: soal, jawaban peserta, benar/salah, waktu respons, dan poin.', actions: [
       { label: 'Excel', fn: async () => { if (!need()) return; const h = await rpc<AnswerHistoryRow[]>('admin_get_answer_history', { p_session_id: sessionId, p_round_id: roundId || null }); await exportExcel(`riwayat-jawaban-${base()}`, [{ name: 'Riwayat', columns: historyColumns, rows: historyRows(h) }]) } },

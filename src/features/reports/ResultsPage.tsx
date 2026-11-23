@@ -101,7 +101,7 @@ function Inner({ eventId }: { eventId: string }) {
                         <TD className="tabular text-right font-semibold">{fmtPoints(r.points)}{Number(r.tiebreak_points) > 0 && <span className="block text-xs font-normal text-flame-600" title="Poin soal tambahan">+{fmtPoints(r.tiebreak_points)} TB</span>}</TD>
                         <TD className="tabular text-right text-emerald-700">{r.correct}</TD><TD className="tabular text-right text-red-600">{r.wrong}</TD><TD className="tabular text-right text-muted-foreground">{r.unanswered}</TD>
                         <TD className="tabular text-right">{fmtSeconds(r.avg_ms)}</TD>
-                        <TD><Badge variant={r.is_eliminated ? 'red' : r.rank <= 3 && s.status === 'finished' ? 'orange' : 'gray'}>{status(r, s.status === 'finished')}</Badge>{r.elimination_reason && <span className="block text-xs text-muted-foreground">{r.elimination_reason}</span>}</TD>
+                        <TD><Badge variant={r.is_eliminated ? 'red' : r.rank <= 6 && s.status === 'finished' ? 'orange' : 'gray'}>{status(r, s.status === 'finished')}</Badge>{r.elimination_reason && <span className="block text-xs text-muted-foreground">{r.elimination_reason}</span>}</TD>
                       </TR>
                     ))}
                   </TBody>

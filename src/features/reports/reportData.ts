@@ -29,7 +29,9 @@ export const applyFilter = (rows: LeaderboardRow[], f: RowFilter) =>
   rows.filter((r) => (!f.district || r.district === f.district) && (!f.school || r.school === f.school) &&
     (!f.q || `${r.name} ${r.school} ${r.number}`.toLowerCase().includes(f.q.toLowerCase())))
 
-export const status = (r: LeaderboardRow, finished = true) => (r.is_eliminated ? 'Tereliminasi' : finished && r.rank <= 3 ? `Juara ${r.rank}` : finished ? 'Peserta' : `Peringkat ${r.rank}`)
+/** Predikat akhir: juara 1–3, juara harapan 1–3 (peringkat 4–6), lalu peserta. */
+export const awardLabel = (rank: number) => (rank <= 3 ? `Juara ${rank}` : rank <= 6 ? `Juara Harapan ${rank - 3}` : null)
+export const status = (r: LeaderboardRow, finished = true) => (r.is_eliminated ? 'Tereliminasi' : finished && awardLabel(r.rank) ? awardLabel(r.rank)! : finished ? 'Peserta' : `Peringkat ${r.rank}`)
 
 export const rankingColumns = [
   { header: 'Peringkat', key: 'rank', width: 10 }, { header: 'No Peserta', key: 'number', width: 12 }, { header: 'Nama', key: 'name', width: 30 },

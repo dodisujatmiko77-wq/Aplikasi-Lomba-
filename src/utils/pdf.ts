@@ -53,20 +53,50 @@ export interface CertificateInfo {
   date: string
   signerName?: string
   signerTitle?: string
+  /** logo aplikasi (kiri atas), path publik */
+  appLogoUrl?: string | null
+  /** logo penyelenggara/event (kanan atas), opsional */
+  organizerLogoUrl?: string | null
 }
 
-const RANK_TITLE: Record<number, string> = { 1: 'JUARA 1', 2: 'JUARA 2', 3: 'JUARA 3' }
+const RANK_TITLE: Record<number, string> = { 1: 'JUARA 1', 2: 'JUARA 2', 3: 'JUARA 3', 4: 'JUARA HARAPAN 1', 5: 'JUARA HARAPAN 2', 6: 'JUARA HARAPAN 3' }
+/** Peringkat yang mendapat piagam (juara 1–3 dan juara harapan 1–3). */
+export const AWARD_MAX_RANK = 6
 
-/** Sertifikat A4 lanskap. Peringkat 1–3 mendapat template pemenang; lainnya template peserta. */
+async function loadImage(url?: string | null): Promise<{ data: string; w: number; h: number; fmt: 'PNG' | 'JPEG' | 'WEBP' } | null> {
+  if (!url) return null
+  try {
+    const res = await fetch(url, { mode: 'cors' })
+    if (!res.ok) return null
+    const blob = await res.blob()
+    if (!blob.type.startsWith('image/')) return null
+    const data = await new Promise<string | null>((resolve) => { const r = new FileReader(); r.onload = () => resolve(typeof r.result === 'string' ? r.result : null); r.onerror = () => resolve(null); r.readAsDataURL(blob) })
+    if (!data) return null
+    const size = await new Promise<{ w: number; h: number } | null>((resolve) => { const i = new Image(); i.onload = () => resolve({ w: i.naturalWidth, h: i.naturalHeight }); i.onerror = () => resolve(null); i.src = data })
+    if (!size) return null
+    const fmt = data.startsWith('data:image/png') ? 'PNG' : data.startsWith('data:image/webp') ? 'WEBP' : 'JPEG'
+    return { data, ...size, fmt }
+  } catch {
+    return null
+  }
+}
+
+/** Sertifikat A4 lanskap. Juara 1–3 dan juara harapan 1–3 (peringkat 4–6) mendapat piagam; lainnya sertifikat peserta. */
 export async function exportCertificates(rows: LeaderboardRow[], info: CertificateInfo, filename: string) {
   const { default: JsPDF } = await import('jspdf')
   const doc = new JsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
   const W = 297
   const H = 210
+  const [appLogo, orgLogo] = await Promise.all([loadImage(info.appLogoUrl), loadImage(info.organizerLogoUrl)])
+  const drawLogo = (img: NonNullable<typeof appLogo>, x: number, y: number, maxW: number, maxH: number, align: 'left' | 'right') => {
+    const s = Math.min(maxW / img.w, maxH / img.h)
+    const w = img.w * s, h = img.h * s
+    doc.addImage(img.data, img.fmt, align === 'left' ? x : x - w, y + (maxH - h) / 2, w, h)
+  }
   rows.forEach((r, i) => {
     if (i > 0) doc.addPage()
-    const winner = r.rank <= 3 && !r.is_eliminated
-    const accent: [number, number, number] = r.rank === 1 ? [201, 152, 20] : r.rank === 2 ? [128, 138, 152] : r.rank === 3 ? [176, 108, 48] : [31, 123, 255]
+    const winner = r.rank <= AWARD_MAX_RANK && !r.is_eliminated
+    const accent: [number, number, number] = r.is_eliminated ? [31, 123, 255] : r.rank === 1 ? [201, 152, 20] : r.rank === 2 ? [128, 138, 152] : r.rank === 3 ? [176, 108, 48] : r.rank <= AWARD_MAX_RANK ? [234, 88, 12] : [31, 123, 255]
     // bingkai
     doc.setFillColor(11, 27, 63)
     doc.rect(0, 0, W, H, 'F')
@@ -77,11 +107,14 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     doc.roundedRect(13, 13, W - 26, H - 26, 2, 2, 'S')
     doc.setLineWidth(0.3)
     doc.roundedRect(15.5, 15.5, W - 31, H - 31, 1.5, 1.5, 'S')
+    // logo
+    if (appLogo) drawLogo(appLogo, 22, 19, 36, 26, 'left')
+    if (orgLogo) drawLogo(orgLogo, W - 22, 19, 36, 26, 'right')
     // kepala
     doc.setTextColor(11, 27, 63)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(12)
-    doc.text(info.organizer.toUpperCase(), W / 2, 31, { align: 'center' })
+    doc.text(info.organizer.toUpperCase(), W / 2, 31, { align: 'center', maxWidth: W - 110 })
     doc.setFontSize(34)
     doc.text(winner ? 'PIAGAM PENGHARGAAN' : 'SERTIFIKAT', W / 2, 50, { align: 'center' })
     doc.setFont('helvetica', 'normal')
@@ -103,7 +136,7 @@ export async function exportCertificates(rows: LeaderboardRow[], info: Certifica
     doc.text('sebagai', W / 2, 108, { align: 'center' })
     // predikat
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(winner ? 30 : 24)
+    doc.setFontSize(winner ? (r.rank > 3 ? 26 : 30) : 24)
     doc.setTextColor(...accent)
     doc.text(winner ? RANK_TITLE[r.rank] : 'PESERTA', W / 2, 123, { align: 'center' })
     doc.setFont('helvetica', 'normal')
